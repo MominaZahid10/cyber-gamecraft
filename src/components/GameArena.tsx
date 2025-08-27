@@ -17,74 +17,158 @@ const FighterCharacter = ({ position, color, isPlayer = false }: { position: [nu
   const meshRef = useRef<THREE.Group>(null);
   const leftArmRef = useRef<THREE.Mesh>(null);
   const rightArmRef = useRef<THREE.Mesh>(null);
+  const leftLegRef = useRef<THREE.Mesh>(null);
+  const rightLegRef = useRef<THREE.Mesh>(null);
+  const bodyRef = useRef<THREE.Mesh>(null);
   const [isAttacking, setIsAttacking] = useState(false);
+  const [isWalking, setIsWalking] = useState(false);
+  const [isBlocking, setIsBlocking] = useState(false);
   const [position2D, setPosition2D] = useState(position);
+  const [facingDirection, setFacingDirection] = useState(isPlayer ? 1 : -1);
 
   useFrame((state, delta) => {
-    if (meshRef.current && !isAttacking) {
+    if (meshRef.current) {
       // Realistic idle animation - breathing and slight movement
-      meshRef.current.position.y = position2D[1] + Math.sin(state.clock.elapsedTime * 1.5) * 0.03;
-      
-      // Arm movement during idle
-      if (leftArmRef.current) {
-        leftArmRef.current.rotation.z = Math.sin(state.clock.elapsedTime * 0.8) * 0.1;
+      if (!isAttacking && !isWalking) {
+        meshRef.current.position.y = position2D[1] + Math.sin(state.clock.elapsedTime * 1.5) * 0.02;
+
+        // Subtle arm sway during idle
+        if (leftArmRef.current) {
+          leftArmRef.current.rotation.z = Math.sin(state.clock.elapsedTime * 0.8) * 0.05;
+          leftArmRef.current.rotation.x = Math.sin(state.clock.elapsedTime * 0.6) * 0.03;
+        }
+        if (rightArmRef.current) {
+          rightArmRef.current.rotation.z = -Math.sin(state.clock.elapsedTime * 0.8) * 0.05;
+          rightArmRef.current.rotation.x = -Math.sin(state.clock.elapsedTime * 0.6) * 0.03;
+        }
+
+        // Body breathing animation
+        if (bodyRef.current) {
+          bodyRef.current.scale.y = 1 + Math.sin(state.clock.elapsedTime * 2) * 0.02;
+        }
       }
-      if (rightArmRef.current) {
-        rightArmRef.current.rotation.z = -Math.sin(state.clock.elapsedTime * 0.8) * 0.1;
+
+      // Walking animation
+      if (isWalking && !isAttacking) {
+        const walkCycle = state.clock.elapsedTime * 8;
+
+        if (leftLegRef.current && rightLegRef.current) {
+          leftLegRef.current.rotation.x = Math.sin(walkCycle) * 0.4;
+          rightLegRef.current.rotation.x = Math.sin(walkCycle + Math.PI) * 0.4;
+        }
+
+        if (leftArmRef.current && rightArmRef.current) {
+          leftArmRef.current.rotation.x = Math.sin(walkCycle + Math.PI) * 0.3;
+          rightArmRef.current.rotation.x = Math.sin(walkCycle) * 0.3;
+        }
+
+        // Walking bob
+        meshRef.current.position.y = position2D[1] + Math.abs(Math.sin(walkCycle * 2)) * 0.05;
+      }
+
+      // Always face opponent
+      if (meshRef.current) {
+        meshRef.current.rotation.y = facingDirection < 0 ? Math.PI : 0;
       }
     }
   });
 
-  const performAttack = () => {
+  const performAttack = (attackType: 'punch' | 'kick' = 'punch') => {
     if (!meshRef.current || isAttacking) return;
-    
+
     setIsAttacking(true);
     const originalX = position2D[0];
-    
-    // Realistic punch animation with arm movement
-    if (rightArmRef.current) {
-      rightArmRef.current.rotation.x = -Math.PI / 3;
-    }
-    
-    // Forward lunge
-    setPosition2D([originalX + (isPlayer ? 0.4 : -0.4), position2D[1], position2D[2]]);
-    
-    setTimeout(() => {
-      if (rightArmRef.current) {
-        rightArmRef.current.rotation.x = 0;
+
+    if (attackType === 'punch') {
+      // Realistic punch animation with full body movement
+      if (rightArmRef.current && bodyRef.current) {
+        rightArmRef.current.rotation.x = -Math.PI / 2;
+        rightArmRef.current.rotation.z = facingDirection * -0.3;
+        bodyRef.current.rotation.y = facingDirection * -0.1;
       }
-      setPosition2D([originalX, position2D[1], position2D[2]]);
-      setIsAttacking(false);
-    }, 400);
+
+      // Forward lunge with proper spacing
+      setPosition2D([originalX + (facingDirection * 0.3), position2D[1], position2D[2]]);
+
+      setTimeout(() => {
+        if (rightArmRef.current && bodyRef.current) {
+          rightArmRef.current.rotation.x = 0;
+          rightArmRef.current.rotation.z = 0;
+          bodyRef.current.rotation.y = 0;
+        }
+        setPosition2D([originalX, position2D[1], position2D[2]]);
+        setIsAttacking(false);
+      }, 400);
+    } else if (attackType === 'kick') {
+      // Kick animation
+      if (rightLegRef.current && bodyRef.current) {
+        rightLegRef.current.rotation.x = Math.PI / 3;
+        bodyRef.current.rotation.y = facingDirection * -0.15;
+      }
+
+      setPosition2D([originalX + (facingDirection * 0.4), position2D[1], position2D[2]]);
+
+      setTimeout(() => {
+        if (rightLegRef.current && bodyRef.current) {
+          rightLegRef.current.rotation.x = 0;
+          bodyRef.current.rotation.y = 0;
+        }
+        setPosition2D([originalX, position2D[1], position2D[2]]);
+        setIsAttacking(false);
+      }, 500);
+    }
   };
 
   // Enhanced movement with WASD
   useEffect(() => {
     if (!isPlayer) return;
 
-    const handleKeyPress = (event: KeyboardEvent) => {
+    const handleKeyDown = (event: KeyboardEvent) => {
       if (isAttacking) return;
-      
-      const moveSpeed = 0.1;
+
+      const moveSpeed = 0.08;
+      const prevPos = position2D;
+
       switch (event.key.toLowerCase()) {
         case 'w':
-          setPosition2D(prev => [prev[0], prev[1], Math.max(-3, prev[2] - moveSpeed)]);
+          setPosition2D(prev => [prev[0], prev[1], Math.max(-4, prev[2] - moveSpeed)]);
+          setIsWalking(true);
           break;
         case 's':
-          setPosition2D(prev => [prev[0], prev[1], Math.min(3, prev[2] + moveSpeed)]);
+          setPosition2D(prev => [prev[0], prev[1], Math.min(4, prev[2] + moveSpeed)]);
+          setIsWalking(true);
           break;
         case 'a':
-          setPosition2D(prev => [Math.max(-4, prev[0] - moveSpeed), prev[1], prev[2]]);
+          setPosition2D(prev => [Math.max(-6, prev[0] - moveSpeed), prev[1], prev[2]]);
+          setFacingDirection(-1);
+          setIsWalking(true);
           break;
         case 'd':
-          setPosition2D(prev => [Math.min(4, prev[0] + moveSpeed), prev[1], prev[2]]);
+          setPosition2D(prev => [Math.min(6, prev[0] + moveSpeed), prev[1], prev[2]]);
+          setFacingDirection(1);
+          setIsWalking(true);
           break;
       }
     };
 
-    window.addEventListener('keydown', handleKeyPress);
-    return () => window.removeEventListener('keydown', handleKeyPress);
-  }, [isPlayer, isAttacking]);
+    const handleKeyUp = (event: KeyboardEvent) => {
+      switch (event.key.toLowerCase()) {
+        case 'w':
+        case 's':
+        case 'a':
+        case 'd':
+          setIsWalking(false);
+          break;
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    window.addEventListener('keyup', handleKeyUp);
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+      window.removeEventListener('keyup', handleKeyUp);
+    };
+  }, [isPlayer, isAttacking, position2D]);
 
   // Combat controls
   useEffect(() => {
@@ -93,17 +177,54 @@ const FighterCharacter = ({ position, color, isPlayer = false }: { position: [nu
     const handleCombatKeys = (event: KeyboardEvent) => {
       switch (event.key.toLowerCase()) {
         case 'j':
+          performAttack('punch');
+          break;
         case 'k':
-          performAttack();
+          performAttack('kick');
+          break;
+        case 'l':
+          // Block animation
+          if (!isAttacking && !isBlocking) {
+            setIsBlocking(true);
+            if (leftArmRef.current && rightArmRef.current) {
+              leftArmRef.current.rotation.x = -Math.PI / 4;
+              rightArmRef.current.rotation.x = -Math.PI / 4;
+              leftArmRef.current.position.z = facingDirection * 0.2;
+              rightArmRef.current.position.z = facingDirection * 0.2;
+            }
+            setTimeout(() => {
+              if (leftArmRef.current && rightArmRef.current) {
+                leftArmRef.current.rotation.x = 0;
+                rightArmRef.current.rotation.x = 0;
+                leftArmRef.current.position.z = 0;
+                rightArmRef.current.position.z = 0;
+              }
+              setIsBlocking(false);
+            }, 800);
+          }
           break;
         case ' ':
-          // Jump animation
-          if (meshRef.current && !isAttacking) {
+          // Jump animation with realistic arc
+          if (meshRef.current && !isAttacking && !isBlocking) {
             const originalY = position2D[1];
-            setPosition2D(prev => [prev[0], prev[1] + 0.5, prev[2]]);
-            setTimeout(() => {
-              setPosition2D(prev => [prev[0], originalY, prev[2]]);
-            }, 300);
+            let jumpHeight = 0;
+            const jumpDuration = 600;
+            const startTime = Date.now();
+
+            const animateJump = () => {
+              const elapsed = Date.now() - startTime;
+              const progress = Math.min(elapsed / jumpDuration, 1);
+
+              // Parabolic jump curve
+              jumpHeight = Math.sin(progress * Math.PI) * 0.8;
+              setPosition2D(prev => [prev[0], originalY + jumpHeight, prev[2]]);
+
+              if (progress < 1) {
+                requestAnimationFrame(animateJump);
+              }
+            };
+
+            animateJump();
           }
           break;
       }
@@ -111,33 +232,55 @@ const FighterCharacter = ({ position, color, isPlayer = false }: { position: [nu
 
     window.addEventListener('keydown', handleCombatKeys);
     return () => window.removeEventListener('keydown', handleCombatKeys);
-  }, [isPlayer, isAttacking, position2D]);
+  }, [isPlayer, isAttacking, isBlocking, position2D, facingDirection]);
 
   return (
     <group ref={meshRef} position={position2D}>
       {/* Realistic body with better proportions */}
-      <Box args={[0.5, 1.4, 0.35]}>
+      <Box ref={bodyRef} args={[0.45, 1.2, 0.3]} position={[0, 0.1, 0]}>
         <meshPhongMaterial color={color} />
       </Box>
-      
+
       {/* Head with helmet effect */}
-      <Sphere args={[0.18]} position={[0, 0.9, 0]}>
+      <Sphere args={[0.16]} position={[0, 0.8, 0]}>
         <meshPhongMaterial color={color} emissive={color} emissiveIntensity={0.1} />
       </Sphere>
-      
-      {/* Animated Arms */}
-      <Box ref={leftArmRef} args={[0.18, 0.7, 0.18]} position={[-0.35, 0.3, 0]}>
+
+      {/* Enhanced Animated Arms with shoulders */}
+      <Sphere args={[0.12]} position={[-0.32, 0.5, 0]}>
+        <meshPhongMaterial color={color} />
+      </Sphere>
+      <Box ref={leftArmRef} args={[0.16, 0.6, 0.16]} position={[-0.35, 0.1, 0]}>
         <meshPhongMaterial color={color} />
       </Box>
-      <Box ref={rightArmRef} args={[0.18, 0.7, 0.18]} position={[0.35, 0.3, 0]}>
+
+      <Sphere args={[0.12]} position={[0.32, 0.5, 0]}>
+        <meshPhongMaterial color={color} />
+      </Sphere>
+      <Box ref={rightArmRef} args={[0.16, 0.6, 0.16]} position={[0.35, 0.1, 0]}>
         <meshPhongMaterial color={color} />
       </Box>
-      
-      {/* Legs with better stance */}
-      <Box args={[0.18, 0.9, 0.18]} position={[-0.18, -1.1, 0]}>
+
+      {/* Enhanced Legs with hips */}
+      <Sphere args={[0.10]} position={[-0.15, -0.6, 0]}>
+        <meshPhongMaterial color={color} />
+      </Sphere>
+      <Box ref={leftLegRef} args={[0.16, 0.8, 0.16]} position={[-0.15, -1.0, 0]}>
         <meshPhongMaterial color={color} />
       </Box>
-      <Box args={[0.18, 0.9, 0.18]} position={[0.18, -1.1, 0]}>
+
+      <Sphere args={[0.10]} position={[0.15, -0.6, 0]}>
+        <meshPhongMaterial color={color} />
+      </Sphere>
+      <Box ref={rightLegRef} args={[0.16, 0.8, 0.16]} position={[0.15, -1.0, 0]}>
+        <meshPhongMaterial color={color} />
+      </Box>
+
+      {/* Feet */}
+      <Box args={[0.2, 0.1, 0.3]} position={[-0.15, -1.45, 0.05]}>
+        <meshPhongMaterial color={color} />
+      </Box>
+      <Box args={[0.2, 0.1, 0.3]} position={[0.15, -1.45, 0.05]}>
         <meshPhongMaterial color={color} />
       </Box>
       
@@ -433,8 +576,8 @@ const GameArena: React.FC<GameArenaProps> = ({ gameType, onGameChange, showAnaly
       case 'fighting':
         return (
           <>
-            <FighterCharacter position={[-2, 0, 0]} color="#00D4FF" isPlayer />
-            <FighterCharacter position={[2, 0, 0]} color="#FF6B35" />
+            <FighterCharacter position={[-3, 0, 0]} color="#00D4FF" isPlayer />
+            <FighterCharacter position={[3, 0, 0]} color="#FF6B35" />
           </>
         );
       case 'badminton':
@@ -540,8 +683,8 @@ const GameArena: React.FC<GameArenaProps> = ({ gameType, onGameChange, showAnaly
             {gameType === 'fighting' && (
               <>
                 <div>WASD: Move</div>
-                <div>J/K: Attack</div>
-                <div>SPACE: Jump</div>
+                <div>J: Punch | K: Kick</div>
+                <div>L: Block | SPACE: Jump</div>
               </>
             )}
             {gameType === 'badminton' && (
