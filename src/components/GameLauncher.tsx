@@ -11,17 +11,17 @@ const GameLauncher: React.FC<GameLauncherProps> = ({ onGameSelect }) => {
   const games = [
     {
       id: 'fighting' as const,
-      title: 'NEXUS COMBAT',
-      description: 'Elite martial arts arena with dynamic combat physics',
+      title: 'FIGHTING ARENA',
+      description: 'Realistic combat with advanced character movements and combat physics',
       color: 'text-primary',
       bgColor: 'from-primary/30 to-gaming-teal/20',
-      icon: '⚔️',
+      icon: '🥊',
       gradient: 'bg-gradient-to-br from-primary/20 via-gaming-teal/10 to-gaming-purple/15'
     },
     {
       id: 'badminton' as const,
-      title: 'QUANTUM COURT',
-      description: 'Professional badminton arena with realistic physics simulation',
+      title: 'BADMINTON COURT',
+      description: 'Professional badminton with realistic shuttle physics and racket mechanics',
       color: 'text-gaming-purple',
       bgColor: 'from-gaming-purple/30 to-gaming-magenta/20',
       icon: '🏸',
@@ -29,45 +29,45 @@ const GameLauncher: React.FC<GameLauncherProps> = ({ onGameSelect }) => {
     },
     {
       id: 'racing' as const,
-      title: 'VELOCITY TRACK',
-      description: 'High-performance racing circuit with advanced vehicle dynamics',
+      title: 'CAR RACING TRACK',
+      description: 'High-speed racing with realistic car physics and enhanced environments',
       color: 'text-gaming-orange',
       bgColor: 'from-gaming-orange/30 to-gaming-yellow/20',
-      icon: '🏁',
+      icon: '🏎️',
       gradient: 'bg-gradient-to-br from-gaming-orange/20 via-gaming-yellow/10 to-primary/15'
     }
   ];
 
   return (
-    <div 
-      className="min-h-screen bg-cover bg-center bg-no-repeat flex items-center justify-center p-8"
+    <div
+      className="min-h-screen bg-cover bg-center bg-no-repeat flex items-center justify-center p-4 overflow-auto"
       style={{ backgroundImage: `url(${arenaBg})` }}
     >
       <div className="absolute inset-0 bg-background/80 backdrop-blur-sm" />
       
-      <div className="relative z-10 max-w-6xl w-full">
+      <div className="relative z-10 max-w-5xl w-full">
         {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: -50 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
-          className="text-center mb-16"
+          className="text-center mb-8"
         >
           <div className="inline-block bg-gradient-hero bg-clip-text text-transparent mb-6">
             <h1 className="text-7xl font-gaming font-black tracking-wider drop-shadow-2xl">
-              NEXUS ARENA
+              MULTI GAME ARENA
             </h1>
           </div>
           <div className="text-2xl font-medium text-foreground/90 mb-4">
-            Professional Gaming Experience
+            Ultimate Gaming Experience
           </div>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            Enter the next-generation gaming arena where physics meets precision
+            Master three epic challenges: Fighting, Badminton, and Car Racing with realistic physics
           </p>
         </motion.div>
 
         {/* Game Selection Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {games.map((game, index) => (
             <motion.div
               key={game.id}
@@ -77,29 +77,29 @@ const GameLauncher: React.FC<GameLauncherProps> = ({ onGameSelect }) => {
               whileHover={{ scale: 1.05, y: -10 }}
               whileTap={{ scale: 0.95 }}
             >
-              <Card 
-                className={`cursor-pointer h-96 overflow-hidden relative group border-2 border-border/50 hover:border-primary/60 transition-all duration-500 backdrop-blur-sm ${game.gradient} hover:scale-[1.02] active:scale-[0.98]`}
+              <Card
+                className={`cursor-pointer h-80 overflow-hidden relative group border-2 border-border/50 hover:border-primary/60 transition-all duration-500 backdrop-blur-sm ${game.gradient} hover:scale-[1.02] active:scale-[0.98]`}
                 onClick={() => onGameSelect(game.id)}
               >
-                <CardContent className="p-8 h-full flex flex-col justify-between relative z-10">
+                <CardContent className="p-6 h-full flex flex-col justify-between relative z-10">
                   <div className="text-center">
-                    <div className="text-7xl mb-6 group-hover:scale-110 transition-transform duration-300 filter drop-shadow-lg">
+                    <div className="text-5xl mb-4 group-hover:scale-110 transition-transform duration-300 filter drop-shadow-lg">
                       {game.icon}
                     </div>
-                    <h3 className={`text-3xl font-gaming font-bold mb-4 ${game.color} tracking-wide`}>
+                    <h3 className={`text-2xl font-gaming font-bold mb-3 ${game.color} tracking-wide`}>
                       {game.title}
                     </h3>
-                    <p className="text-foreground/80 text-base leading-relaxed">
+                    <p className="text-foreground/80 text-sm leading-relaxed">
                       {game.description}
                     </p>
                   </div>
                   
                   <motion.div
-                    className="mt-8"
+                    className="mt-6"
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
                   >
-                    <div className="btn-gaming w-full py-4 text-center font-gaming font-bold text-lg tracking-widest">
+                    <div className="btn-gaming w-full py-3 text-center font-gaming font-bold text-base tracking-widest">
                       INITIALIZE
                     </div>
                   </motion.div>
@@ -118,10 +118,10 @@ const GameLauncher: React.FC<GameLauncherProps> = ({ onGameSelect }) => {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 1, delay: 0.8 }}
-          className="text-center mt-12"
+          className="text-center mt-8"
         >
           <p className="text-sm text-muted-foreground">
-            Use WASD for movement • J/K for combat • Click and drag to rotate view
+            Use WASD for movement • J/K for combat • Space for actions • Click and drag to rotate view
           </p>
         </motion.div>
       </div>
