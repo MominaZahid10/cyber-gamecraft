@@ -989,8 +989,8 @@ const CameraController = ({ gameType }: { gameType: 'fighting' | 'badminton' | '
   useEffect(() => {
     // Smooth camera transitions for professional gaming perspective
     const targetPositions = {
-      fighting: { position: [5, 1.5, 5], target: [0, 0, 0] },
-      badminton: { position: [0, 3, 6], target: [0, 1, 0] },
+      fighting: { position: [4, 2, 4], target: [0, 0.5, 0] },
+      badminton: { position: [0, 4, 5], target: [0, 1, 0] },
       racing: { position: [0, 2, 8], target: [0, -1, 0] }
     };
 
