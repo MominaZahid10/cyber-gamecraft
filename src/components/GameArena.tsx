@@ -794,53 +794,72 @@ const ArenaEnvironment = ({ gameType }: { gameType: 'fighting' | 'badminton' | '
         </>
       )}
       
-      {/* Professional Badminton Court */}
+      {/* Realistic Badminton Court */}
       {gameType === 'badminton' && (
         <>
-          {/* Enhanced Professional Net */}
-          <Box args={[0.08, 2.2, 8]} position={[0, 0.1, 0]}>
-            <meshPhongMaterial color="#FFFFFF" shininess={100} />
+          {/* Court surface */}
+          <Plane args={[13, 6]} rotation={[-Math.PI / 2, 0, 0]} position={[0, -1.86, 0]}>
+            <meshPhongMaterial color="#2E7D32" />
+          </Plane>
+
+          {/* Net */}
+          <Box args={[0.05, 1.55, 6.1]} position={[0, 0.775, 0]}>
+            <meshPhongMaterial color="#FFFFFF" />
           </Box>
-          <mesh position={[0, 1.1, 0]} rotation={[0, 0, 0]}>
-            <planeGeometry args={[8, 2]} />
-            <meshBasicMaterial color="#E0E0E0" wireframe transparent opacity={0.9} />
+          <mesh position={[0, 0.775, 0]} rotation={[0, 0, 0]}>
+            <planeGeometry args={[6.1, 1.55]} />
+            <meshBasicMaterial color="#FFFFFF" wireframe transparent opacity={0.8} />
           </mesh>
 
           {/* Net posts */}
-          <Box args={[0.15, 2.5, 0.15]} position={[0, 1.25, 4]}>
-            <meshPhongMaterial color="#2D1B69" />
+          <Box args={[0.08, 1.6, 0.08]} position={[0, 0.8, 3.05]}>
+            <meshPhongMaterial color="#1A1A1A" />
           </Box>
-          <Box args={[0.15, 2.5, 0.15]} position={[0, 1.25, -4]}>
-            <meshPhongMaterial color="#2D1B69" />
+          <Box args={[0.08, 1.6, 0.08]} position={[0, 0.8, -3.05]}>
+            <meshPhongMaterial color="#1A1A1A" />
           </Box>
-          
-          {/* Enhanced Court lines with glow effect */}
-          <Plane args={[14, 0.1]} rotation={[-Math.PI / 2, 0, 0]} position={[0, -1.84, 4]}>
+
+          {/* Court boundary lines */}
+          <Plane args={[13, 0.05]} rotation={[-Math.PI / 2, 0, 0]} position={[0, -1.84, 3]}>
             <meshBasicMaterial color="#FFFFFF" />
           </Plane>
-          <Plane args={[14, 0.1]} rotation={[-Math.PI / 2, 0, 0]} position={[0, -1.84, -4]}>
+          <Plane args={[13, 0.05]} rotation={[-Math.PI / 2, 0, 0]} position={[0, -1.84, -3]}>
             <meshBasicMaterial color="#FFFFFF" />
           </Plane>
-          <Plane args={[0.1, 8]} rotation={[-Math.PI / 2, 0, 0]} position={[7, -1.84, 0]}>
+          <Plane args={[0.05, 6]} rotation={[-Math.PI / 2, 0, 0]} position={[6.5, -1.84, 0]}>
             <meshBasicMaterial color="#FFFFFF" />
           </Plane>
-          <Plane args={[0.1, 8]} rotation={[-Math.PI / 2, 0, 0]} position={[-7, -1.84, 0]}>
+          <Plane args={[0.05, 6]} rotation={[-Math.PI / 2, 0, 0]} position={[-6.5, -1.84, 0]}>
             <meshBasicMaterial color="#FFFFFF" />
           </Plane>
 
-          {/* Service lines with enhanced visibility */}
-          <Plane args={[6, 0.08]} rotation={[-Math.PI / 2, 0, 0]} position={[0, -1.83, 1.5]}>
-            <meshBasicMaterial color="#4ECDC4" />
+          {/* Service lines */}
+          <Plane args={[4, 0.05]} rotation={[-Math.PI / 2, 0, 0]} position={[0, -1.83, 1.25]}>
+            <meshBasicMaterial color="#FFFFFF" />
           </Plane>
-          <Plane args={[6, 0.08]} rotation={[-Math.PI / 2, 0, 0]} position={[0, -1.83, -1.5]}>
-            <meshBasicMaterial color="#4ECDC4" />
+          <Plane args={[4, 0.05]} rotation={[-Math.PI / 2, 0, 0]} position={[0, -1.83, -1.25]}>
+            <meshBasicMaterial color="#FFFFFF" />
           </Plane>
 
-          {/* Court center circle */}
-          <mesh position={[0, -1.83, 0]} rotation={[-Math.PI / 2, 0, 0]}>
-            <ringGeometry args={[0.3, 0.35, 32]} />
-            <meshBasicMaterial color="#A855F7" />
-          </mesh>
+          {/* Background stadium */}
+          <Plane args={[40, 15]} position={[0, 5, -15]}>
+            <meshBasicMaterial color="#1A4B3A" />
+          </Plane>
+
+          {/* Stadium seating */}
+          {Array.from({ length: 6 }, (_, i) => (
+            <Box key={i} args={[8, 2, 1]} position={[-15 + i * 6, 2 + i * 0.5, -12]}>
+              <meshPhongMaterial color="#4A4A4A" />
+            </Box>
+          ))}
+
+          {/* Stadium lights */}
+          <Box args={[0.3, 8, 0.3]} position={[-10, 4, -8]}>
+            <meshPhongMaterial color="#C0C0C0" />
+          </Box>
+          <Box args={[0.3, 8, 0.3]} position={[10, 4, -8]}>
+            <meshPhongMaterial color="#C0C0C0" />
+          </Box>
         </>
       )}
       
@@ -938,13 +957,13 @@ const ArenaEnvironment = ({ gameType }: { gameType: 'fighting' | 'badminton' | '
       )}
       
       {/* Enhanced Professional Gaming Lighting */}
-      <ambientLight intensity={0.3} color="#2A2A4A" />
+      <ambientLight intensity={gameType === 'badminton' ? 0.4 : 0.3} color="#2A2A4A" />
 
       {/* Main arena lighting */}
       <directionalLight
         position={[15, 12, 8]}
-        intensity={1.5}
-        color={gameType === 'fighting' ? "#4ECDC4" : gameType === 'badminton' ? "#A855F7" : "#FFD700"}
+        intensity={gameType === 'badminton' ? 2.0 : 1.5}
+        color={gameType === 'fighting' ? "#4ECDC4" : gameType === 'badminton' ? "#FFFFFF" : "#FFD700"}
         castShadow
         shadow-mapSize={[2048, 2048]}
         shadow-camera-far={50}
@@ -958,18 +977,26 @@ const ArenaEnvironment = ({ gameType }: { gameType: 'fighting' | 'badminton' | '
       <directionalLight
         position={[-10, 8, -6]}
         intensity={0.8}
-        color={gameType === 'fighting' ? "#A855F7" : gameType === 'badminton' ? "#4ECDC4" : "#FF6B35"}
+        color={gameType === 'fighting' ? "#A855F7" : gameType === 'badminton' ? "#87CEEB" : "#FF6B35"}
       />
 
       {/* Central spotlight */}
       <spotLight
         position={[0, 15, 0]}
-        intensity={1.2}
+        intensity={gameType === 'badminton' ? 1.5 : 1.2}
         angle={Math.PI / 4}
         penumbra={0.3}
         color="#FFFFFF"
         castShadow
       />
+
+      {/* Stadium lighting for badminton */}
+      {gameType === 'badminton' && (
+        <>
+          <spotLight position={[-10, 12, -8]} intensity={0.8} angle={Math.PI / 6} color="#FFFFFF" />
+          <spotLight position={[10, 12, -8]} intensity={0.8} angle={Math.PI / 6} color="#FFFFFF" />
+        </>
+      )}
 
       {/* Rim lighting */}
       <pointLight position={[-8, 4, 8]} intensity={0.5} color="#4ECDC4" />
