@@ -1051,7 +1051,7 @@ const GameArena: React.FC<GameArenaProps> = ({ gameType, onGameChange, showAnaly
       case 'racing':
         return (
           <>
-            <RacingCar position={[-2, -1.75, 0]} color="#00D4FF" isPlayer />
+            <RacingCar position={[-2, -1.75, 0]} color="#4ECDC4" isPlayer />
             <RacingCar position={[2, -1.75, -3]} color="#FF6B35" />
             <RacingCar position={[0, -1.75, -6]} color="#A855F7" />
           </>
