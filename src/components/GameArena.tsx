@@ -745,12 +745,26 @@ const ArenaEnvironment = ({ gameType }: { gameType: 'fighting' | 'badminton' | '
       {/* Enhanced Arena Floor with professional gaming aesthetics */}
       <Plane args={[25, 25]} rotation={[-Math.PI / 2, 0, 0]} position={[0, -2, 0]}>
         <meshPhongMaterial
-          color={gameType === 'fighting' ? "#0D1B2A" : gameType === 'badminton' ? "#1A2B1A" : "#2A2A2A"}
+          color={gameType === 'fighting' ? "#1A1A2E" : gameType === 'badminton' ? "#1A2B1A" : "#2A2A2A"}
         />
       </Plane>
 
-      {/* Arena floor grid pattern */}
-      {Array.from({ length: 10 }, (_, i) => (
+      {/* Fighting arena octagon ring */}
+      {gameType === 'fighting' && (
+        <>
+          <mesh position={[0, -1.98, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+            <ringGeometry args={[3, 3.2, 8]} />
+            <meshBasicMaterial color="#FFD700" />
+          </mesh>
+          <mesh position={[0, -1.97, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+            <circleGeometry args={[3, 8]} />
+            <meshPhongMaterial color="#2A2A4A" />
+          </mesh>
+        </>
+      )}
+
+      {/* Arena floor grid pattern for non-fighting games */}
+      {gameType !== 'fighting' && Array.from({ length: 10 }, (_, i) => (
         <React.Fragment key={i}>
           <Plane args={[0.05, 25]} rotation={[-Math.PI / 2, 0, 0]} position={[-10 + i * 2, -1.99, 0]}>
             <meshBasicMaterial color="#4ECDC4" transparent opacity={0.3} />
@@ -761,36 +775,67 @@ const ArenaEnvironment = ({ gameType }: { gameType: 'fighting' | 'badminton' | '
         </React.Fragment>
       ))}
       
-      {/* Enhanced Arena Walls for fighting game */}
+      {/* Enhanced Fighting Arena Environment */}
       {gameType === 'fighting' && (
         <>
-          {/* Back wall with gaming aesthetics */}
-          <Plane args={[25, 12]} position={[0, 4, -12]}>
+          {/* Arena cage structure */}
+          <mesh position={[0, 1, 0]}>
+            <cylinderGeometry args={[4, 4, 4, 8, 1, true]} />
+            <meshBasicMaterial color="#C0C0C0" wireframe transparent opacity={0.6} />
+          </mesh>
+
+          {/* Arena posts */}
+          {Array.from({ length: 8 }, (_, i) => {
+            const angle = (i / 8) * Math.PI * 2;
+            const x = Math.cos(angle) * 4;
+            const z = Math.sin(angle) * 4;
+            return (
+              <Box key={i} args={[0.1, 4, 0.1]} position={[x, 1, z]}>
+                <meshPhongMaterial color="#808080" />
+              </Box>
+            );
+          })}
+
+          {/* Audience seating */}
+          {Array.from({ length: 12 }, (_, i) => {
+            const angle = (i / 12) * Math.PI * 2;
+            const x = Math.cos(angle) * 8;
+            const z = Math.sin(angle) * 8;
+            return (
+              <Box key={i} args={[2, 1.5, 1]} position={[x, 0.75, z]} rotation={[0, -angle, 0]}>
+                <meshPhongMaterial color="#2A2A4A" />
+              </Box>
+            );
+          })}
+
+          {/* Arena lights */}
+          <Box args={[0.3, 0.3, 0.3]} position={[0, 8, 0]}>
+            <meshBasicMaterial color="#FFFFFF" />
+          </Box>
+          {Array.from({ length: 4 }, (_, i) => {
+            const angle = (i / 4) * Math.PI * 2;
+            const x = Math.cos(angle) * 6;
+            const z = Math.sin(angle) * 6;
+            return (
+              <Box key={i} args={[0.2, 0.2, 0.2]} position={[x, 6, z]}>
+                <meshBasicMaterial color="#FFD700" />
+              </Box>
+            );
+          })}
+
+          {/* Background arena walls */}
+          <Plane args={[30, 15]} position={[0, 6, -15]}>
             <meshPhongMaterial color="#1A1A2E" />
           </Plane>
-          <Plane args={[25, 12]} rotation={[0, Math.PI, 0]} position={[0, 4, 12]}>
+          <Plane args={[30, 15]} rotation={[0, Math.PI, 0]} position={[0, 6, 15]}>
             <meshPhongMaterial color="#1A1A2E" />
           </Plane>
-
-          {/* Side walls */}
-          <Plane args={[24, 12]} rotation={[0, Math.PI / 2, 0]} position={[-12, 4, 0]}>
+          <Plane args={[30, 15]} rotation={[0, Math.PI / 2, 0]} position={[-15, 6, 0]}>
             <meshPhongMaterial color="#16213E" />
           </Plane>
-          <Plane args={[24, 12]} rotation={[0, -Math.PI / 2, 0]} position={[12, 4, 0]}>
+          <Plane args={[30, 15]} rotation={[0, -Math.PI / 2, 0]} position={[15, 6, 0]}>
             <meshPhongMaterial color="#16213E" />
           </Plane>
-
-          {/* LED strips on walls */}
-          {Array.from({ length: 8 }, (_, i) => (
-            <React.Fragment key={i}>
-              <Box args={[2, 0.1, 0.1]} position={[-10 + i * 2.5, 7, -11.9]}>
-                <meshBasicMaterial color="#4ECDC4" />
-              </Box>
-              <Box args={[2, 0.1, 0.1]} position={[-10 + i * 2.5, 7, 11.9]}>
-                <meshBasicMaterial color="#A855F7" />
-              </Box>
-            </React.Fragment>
-          ))}
         </>
       )}
       
