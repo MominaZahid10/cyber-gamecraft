@@ -898,26 +898,47 @@ const ArenaEnvironment = ({ gameType }: { gameType: 'fighting' | 'badminton' | '
   );
 };
 
-// Professional Gaming Camera Controller
+// Enhanced Professional Gaming Camera Controller
 const CameraController = ({ gameType }: { gameType: 'fighting' | 'badminton' | 'racing' }) => {
-  const { camera } = useThree();
-  
+  const { camera, gl } = useThree();
+  const controlsRef = useRef<any>(null);
+
   useEffect(() => {
-    // Professional gaming perspective based on game type
-    switch (gameType) {
-      case 'fighting':
-        camera.position.set(6, 2, 6); // Side angle like fighting games
-        camera.lookAt(0, 0, 0);
-        break;
-      case 'badminton':
-        camera.position.set(0, 4, 8); // Behind player view
-        camera.lookAt(0, 0, 0);
-        break;
-      case 'racing':
-        camera.position.set(0, 3, 10); // Racing game perspective
-        camera.lookAt(0, 0, 0);
-        break;
-    }
+    // Smooth camera transitions for professional gaming perspective
+    const targetPositions = {
+      fighting: { position: [5, 1.5, 5], target: [0, 0, 0] },
+      badminton: { position: [0, 3, 6], target: [0, 1, 0] },
+      racing: { position: [0, 2, 8], target: [0, -1, 0] }
+    };
+
+    const target = targetPositions[gameType];
+
+    // Smooth camera animation
+    const animateCamera = () => {
+      const startPos = camera.position.clone();
+      const endPos = new THREE.Vector3(...target.position);
+      const startTime = Date.now();
+      const duration = 1000; // 1 second transition
+
+      const animate = () => {
+        const elapsed = Date.now() - startTime;
+        const progress = Math.min(elapsed / duration, 1);
+
+        // Smooth easing function
+        const easeProgress = 1 - Math.pow(1 - progress, 3);
+
+        camera.position.lerpVectors(startPos, endPos, easeProgress);
+        camera.lookAt(...target.target);
+
+        if (progress < 1) {
+          requestAnimationFrame(animate);
+        }
+      };
+
+      animate();
+    };
+
+    animateCamera();
   }, [camera, gameType]);
 
   return null;
@@ -962,21 +983,35 @@ const GameArena: React.FC<GameArenaProps> = ({ gameType, onGameChange, showAnaly
       {/* Game Arena */}
       <div className="absolute inset-0">
         <Canvas
-          camera={{ position: [6, 2, 6], fov: 80 }}
+          camera={{
+            position: [6, 2, 6],
+            fov: gameType === 'racing' ? 70 : 75,
+            near: 0.1,
+            far: 100
+          }}
           shadows
-          gl={{ antialias: true, alpha: false }}
+          gl={{
+            antialias: true,
+            alpha: false,
+            powerPreference: "high-performance"
+          }}
         >
           <CameraController gameType={gameType} />
-          <OrbitControls 
+          <OrbitControls
             enablePan={false}
             enableZoom={true}
-            minDistance={4}
-            maxDistance={20}
-            minPolarAngle={Math.PI / 8}
-            maxPolarAngle={Math.PI / 2.2}
+            minDistance={gameType === 'racing' ? 6 : 4}
+            maxDistance={gameType === 'racing' ? 15 : 12}
+            minPolarAngle={Math.PI / 12}
+            maxPolarAngle={Math.PI / 2.5}
+            minAzimuthAngle={gameType === 'fighting' ? -Math.PI / 3 : -Math.PI / 2}
+            maxAzimuthAngle={gameType === 'fighting' ? Math.PI / 3 : Math.PI / 2}
             autoRotate={false}
             enableDamping={true}
-            dampingFactor={0.05}
+            dampingFactor={0.08}
+            rotateSpeed={0.5}
+            zoomSpeed={0.6}
+            target={gameType === 'racing' ? [0, -1, 0] : [0, 0, 0]}
           />
           
           <ArenaEnvironment gameType={gameType} />
