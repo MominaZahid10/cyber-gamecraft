@@ -908,62 +908,80 @@ const ArenaEnvironment = ({ gameType }: { gameType: 'fighting' | 'badminton' | '
         </>
       )}
       
-      {/* Enhanced Racing track with proper environment */}
+      {/* Night Racing Circuit with Enhanced Atmosphere */}
       {gameType === 'racing' && (
         <>
-          {/* Main track surface */}
+          {/* Main track surface - darker for night */}
           <Plane args={[15, 40]} rotation={[-Math.PI / 2, 0, 0]} position={[0, -1.85, 0]}>
-            <meshPhongMaterial color="#2C2C2C" roughness={0.8} />
+            <meshPhongMaterial color="#1A1A1A" roughness={0.8} />
           </Plane>
 
-          {/* Track borders */}
+          {/* Illuminated track borders */}
           <Box args={[0.3, 0.2, 40]} position={[-7.5, -1.75, 0]}>
-            <meshPhongMaterial color="#FF4444" />
+            <meshBasicMaterial color="#FF6B35" />
           </Box>
           <Box args={[0.3, 0.2, 40]} position={[7.5, -1.75, 0]}>
-            <meshPhongMaterial color="#FF4444" />
+            <meshBasicMaterial color="#FF6B35" />
           </Box>
 
-          {/* Center line */}
+          {/* Reflective center line */}
           {Array.from({ length: 20 }, (_, i) => (
             <Box key={i} args={[0.2, 0.02, 1.5]} position={[0, -1.83, -18 + i * 2]} rotation={[-Math.PI / 2, 0, 0]}>
-              <meshBasicMaterial color="#FFFF00" />
+              <meshBasicMaterial color="#FFD700" />
             </Box>
           ))}
 
-          {/* Lane dividers */}
+          {/* Reflective lane dividers */}
           {Array.from({ length: 20 }, (_, i) => (
             <React.Fragment key={i}>
               <Box args={[0.15, 0.02, 1]} position={[-3.5, -1.83, -18 + i * 2]} rotation={[-Math.PI / 2, 0, 0]}>
-                <meshBasicMaterial color="#FFFFFF" />
+                <meshBasicMaterial color="#E0E0E0" />
               </Box>
               <Box args={[0.15, 0.02, 1]} position={[3.5, -1.83, -18 + i * 2]} rotation={[-Math.PI / 2, 0, 0]}>
-                <meshBasicMaterial color="#FFFFFF" />
+                <meshBasicMaterial color="#E0E0E0" />
               </Box>
             </React.Fragment>
           ))}
 
-          {/* Track barriers */}
+          {/* Illuminated track barriers */}
           {Array.from({ length: 10 }, (_, i) => (
             <React.Fragment key={i}>
               <Box args={[0.5, 1, 3]} position={[-9, -1, -15 + i * 6]}>
-                <meshPhongMaterial color="#E0E0E0" />
+                <meshPhongMaterial color="#C0C0C0" />
               </Box>
               <Box args={[0.5, 1, 3]} position={[9, -1, -15 + i * 6]}>
-                <meshPhongMaterial color="#E0E0E0" />
+                <meshPhongMaterial color="#C0C0C0" />
               </Box>
             </React.Fragment>
           ))}
 
-          {/* Grandstands */}
+          {/* Night grandstands with lights */}
           <Box args={[3, 2, 15]} position={[-12, 0, 0]}>
-            <meshPhongMaterial color="#4A4A4A" />
+            <meshPhongMaterial color="#2A2A2A" />
           </Box>
           <Box args={[3, 2, 15]} position={[12, 0, 0]}>
-            <meshPhongMaterial color="#4A4A4A" />
+            <meshPhongMaterial color="#2A2A2A" />
           </Box>
 
-          {/* Start/finish line */}
+          {/* Stadium floodlights */}
+          {Array.from({ length: 8 }, (_, i) => (
+            <React.Fragment key={i}>
+              <Box args={[0.2, 4, 0.2]} position={[-11, 2, -12 + i * 3]}>
+                <meshPhongMaterial color="#808080" />
+              </Box>
+              <Sphere args={[0.3]} position={[-11, 4, -12 + i * 3]}>
+                <meshBasicMaterial color="#FFFFCC" />
+              </Sphere>
+              <Box args={[0.2, 4, 0.2]} position={[11, 2, -12 + i * 3]}>
+                <meshPhongMaterial color="#808080" />
+              </Box>
+              <Sphere args={[0.3]} position={[11, 4, -12 + i * 3]}>
+                <meshBasicMaterial color="#FFFFCC" />
+              </Sphere>
+            </React.Fragment>
+          ))}
+
+          {/* Start/finish line with night lighting */}
           <Plane args={[15, 0.5]} rotation={[-Math.PI / 2, 0, 0]} position={[0, -1.82, 15]}>
             <meshBasicMaterial color="#FFFFFF" />
           </Plane>
@@ -975,40 +993,49 @@ const ArenaEnvironment = ({ gameType }: { gameType: 'fighting' | 'badminton' | '
             </Plane>
           ))}
 
-          {/* Tire stacks as decoration */}
-          {Array.from({ length: 6 }, (_, i) => (
-            <React.Fragment key={i}>
-              <Sphere args={[0.3]} scale={[1, 0.3, 1]} position={[-10, -1.55, -10 + i * 4]}>
-                <meshPhongMaterial color="#1A1A1A" />
-              </Sphere>
-              <Sphere args={[0.3]} scale={[1, 0.3, 1]} position={[10, -1.55, -10 + i * 4]}>
-                <meshPhongMaterial color="#1A1A1A" />
-              </Sphere>
-            </React.Fragment>
-          ))}
-
-          {/* Background environment */}
+          {/* Night sky background */}
           <Plane args={[80, 15]} position={[0, 6, -25]} rotation={[0, 0, 0]}>
-            <meshBasicMaterial color="#87CEEB" />
+            <meshBasicMaterial color="#0A0A1A" />
           </Plane>
 
-          {/* Mountains in background */}
-          {Array.from({ length: 5 }, (_, i) => (
-            <Cone key={i} args={[3, 6]} position={[-20 + i * 10, 1, -25]}>
-              <meshPhongMaterial color="#2E7D32" />
-            </Cone>
+          {/* City skyline silhouette */}
+          {Array.from({ length: 8 }, (_, i) => (
+            <Box key={i} args={[3, 2 + Math.random() * 4, 2]} position={[-16 + i * 4, 2, -22]}>
+              <meshBasicMaterial color="#1A1A2E" />
+            </Box>
+          ))}
+
+          {/* City lights */}
+          {Array.from({ length: 20 }, (_, i) => (
+            <Sphere key={i} args={[0.05]} position={[-18 + Math.random() * 36, 1 + Math.random() * 4, -21]}>
+              <meshBasicMaterial color={Math.random() > 0.5 ? "#FFD700" : "#4ECDC4"} />
+            </Sphere>
+          ))}
+
+          {/* Stars in the sky */}
+          {Array.from({ length: 30 }, (_, i) => (
+            <Sphere key={i} args={[0.02]} position={[
+              (Math.random() - 0.5) * 60,
+              8 + Math.random() * 6,
+              -20 - Math.random() * 10
+            ]}>
+              <meshBasicMaterial color="#FFFFFF" />
+            </Sphere>
           ))}
         </>
       )}
       
       {/* Enhanced Professional Gaming Lighting */}
-      <ambientLight intensity={gameType === 'badminton' ? 0.4 : 0.3} color="#2A2A4A" />
+      <ambientLight
+        intensity={gameType === 'racing' ? 0.1 : gameType === 'badminton' ? 0.4 : 0.3}
+        color={gameType === 'racing' ? "#1A1A3A" : "#2A2A4A"}
+      />
 
       {/* Main arena lighting */}
       <directionalLight
         position={[15, 12, 8]}
-        intensity={gameType === 'badminton' ? 2.0 : 1.5}
-        color={gameType === 'fighting' ? "#4ECDC4" : gameType === 'badminton' ? "#FFFFFF" : "#FFD700"}
+        intensity={gameType === 'racing' ? 0.8 : gameType === 'badminton' ? 2.0 : 1.5}
+        color={gameType === 'fighting' ? "#4ECDC4" : gameType === 'badminton' ? "#FFFFFF" : "#FFFFCC"}
         castShadow
         shadow-mapSize={[2048, 2048]}
         shadow-camera-far={50}
@@ -1021,17 +1048,17 @@ const ArenaEnvironment = ({ gameType }: { gameType: 'fighting' | 'badminton' | '
       {/* Accent lighting */}
       <directionalLight
         position={[-10, 8, -6]}
-        intensity={0.8}
-        color={gameType === 'fighting' ? "#A855F7" : gameType === 'badminton' ? "#87CEEB" : "#FF6B35"}
+        intensity={gameType === 'racing' ? 0.5 : 0.8}
+        color={gameType === 'fighting' ? "#A855F7" : gameType === 'badminton' ? "#87CEEB" : "#4ECDC4"}
       />
 
       {/* Central spotlight */}
       <spotLight
         position={[0, 15, 0]}
-        intensity={gameType === 'badminton' ? 1.5 : 1.2}
+        intensity={gameType === 'racing' ? 2.0 : gameType === 'badminton' ? 1.5 : 1.2}
         angle={Math.PI / 4}
         penumbra={0.3}
-        color="#FFFFFF"
+        color={gameType === 'racing' ? "#FFFFCC" : "#FFFFFF"}
         castShadow
       />
 
@@ -1040,6 +1067,32 @@ const ArenaEnvironment = ({ gameType }: { gameType: 'fighting' | 'badminton' | '
         <>
           <spotLight position={[-10, 12, -8]} intensity={0.8} angle={Math.PI / 6} color="#FFFFFF" />
           <spotLight position={[10, 12, -8]} intensity={0.8} angle={Math.PI / 6} color="#FFFFFF" />
+        </>
+      )}
+
+      {/* Night racing track lighting */}
+      {gameType === 'racing' && (
+        <>
+          {Array.from({ length: 6 }, (_, i) => (
+            <React.Fragment key={i}>
+              <spotLight
+                position={[-11, 4, -12 + i * 4]}
+                intensity={1.5}
+                angle={Math.PI / 3}
+                penumbra={0.5}
+                color="#FFFFCC"
+                target-position={[0, -2, -12 + i * 4]}
+              />
+              <spotLight
+                position={[11, 4, -12 + i * 4]}
+                intensity={1.5}
+                angle={Math.PI / 3}
+                penumbra={0.5}
+                color="#FFFFCC"
+                target-position={[0, -2, -12 + i * 4]}
+              />
+            </React.Fragment>
+          ))}
         </>
       )}
 
