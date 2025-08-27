@@ -1,6 +1,6 @@
 import React, { useRef, useState, useEffect } from 'react';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
-import { OrbitControls, Box, Sphere, Plane, Text3D, Environment } from '@react-three/drei';
+import { OrbitControls, Box, Sphere, Plane, Text3D, Environment, Cone } from '@react-three/drei';
 import { motion } from 'framer-motion';
 import * as THREE from 'three';
 import Shuttlecock from './Shuttlecock';
@@ -746,8 +746,6 @@ const ArenaEnvironment = ({ gameType }: { gameType: 'fighting' | 'badminton' | '
       <Plane args={[25, 25]} rotation={[-Math.PI / 2, 0, 0]} position={[0, -2, 0]}>
         <meshPhongMaterial
           color={gameType === 'fighting' ? "#0D1B2A" : gameType === 'badminton' ? "#1A2B1A" : "#2A2A2A"}
-          shininess={30}
-          specular="#4ECDC4"
         />
       </Plane>
 
@@ -934,7 +932,7 @@ const ArenaEnvironment = ({ gameType }: { gameType: 'fighting' | 'badminton' | '
           ))}
 
           {/* Background environment */}
-          <Plane args={[100, 20]} position={[0, 8, -30]} rotation={[0, 0, 0]}>
+          <Plane args={[80, 15]} position={[0, 6, -25]} rotation={[0, 0, 0]}>
             <meshBasicMaterial color="#87CEEB" />
           </Plane>
 
@@ -987,8 +985,6 @@ const ArenaEnvironment = ({ gameType }: { gameType: 'fighting' | 'badminton' | '
       <pointLight position={[8, 4, 8]} intensity={0.5} color="#FFD700" />
       <pointLight position={[-8, 4, -8]} intensity={0.5} color="#FF6B35" />
 
-      {/* Atmospheric fog effect */}
-      <fog attach="fog" args={['#1A1A2E', 15, 40]} />
     </>
   );
 };
@@ -1088,9 +1084,7 @@ const GameArena: React.FC<GameArenaProps> = ({ gameType, onGameChange, showAnaly
           gl={{
             antialias: true,
             alpha: false,
-            powerPreference: "high-performance",
-            toneMapping: THREE.ACESFilmicToneMapping,
-            toneMappingExposure: 1.2
+            powerPreference: "high-performance"
           }}
         >
           <CameraController gameType={gameType} />
