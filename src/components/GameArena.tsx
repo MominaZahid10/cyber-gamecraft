@@ -243,7 +243,7 @@ const FighterCharacter = ({ position, color, isPlayer = false }: { position: [nu
 
       {/* Head with helmet effect */}
       <Sphere args={[0.16]} position={[0, 0.8, 0]}>
-        <meshPhongMaterial color={color} emissive={color} emissiveIntensity={0.1} />
+        <meshPhongMaterial color={color} />
       </Sphere>
 
       {/* Enhanced Animated Arms with shoulders */}
@@ -294,7 +294,7 @@ const FighterCharacter = ({ position, color, isPlayer = false }: { position: [nu
       
       {/* Chest panel */}
       <Box args={[0.3, 0.4, 0.05]} position={[0, 0.2, 0.18]}>
-        <meshPhongMaterial color="#4ECDC4" emissive="#4ECDC4" emissiveIntensity={0.3} />
+        <meshPhongMaterial color="#4ECDC4" />
       </Box>
     </group>
   );
@@ -479,7 +479,7 @@ const BadmintonPlayer = ({ position, color, isPlayer = false }: { position: [num
 
       {/* Head */}
       <Sphere args={[0.13]} position={[0, 0.7, 0]}>
-        <meshPhongMaterial color={color} emissive={color} emissiveIntensity={0.05} />
+        <meshPhongMaterial color={color} />
       </Sphere>
 
       {/* Enhanced Arms with shoulders */}
@@ -766,18 +766,10 @@ const ArenaEnvironment = ({ gameType }: { gameType: 'fighting' | 'badminton' | '
         <>
           {/* Back wall with gaming aesthetics */}
           <Plane args={[25, 12]} position={[0, 4, -12]}>
-            <meshPhongMaterial
-              color="#1A1A2E"
-              emissive="#4ECDC4"
-              emissiveIntensity={0.1}
-            />
+            <meshPhongMaterial color="#1A1A2E" />
           </Plane>
           <Plane args={[25, 12]} rotation={[0, Math.PI, 0]} position={[0, 4, 12]}>
-            <meshPhongMaterial
-              color="#1A1A2E"
-              emissive="#A855F7"
-              emissiveIntensity={0.1}
-            />
+            <meshPhongMaterial color="#1A1A2E" />
           </Plane>
 
           {/* Side walls */}
@@ -838,16 +830,16 @@ const ArenaEnvironment = ({ gameType }: { gameType: 'fighting' | 'badminton' | '
 
           {/* Service lines with enhanced visibility */}
           <Plane args={[6, 0.08]} rotation={[-Math.PI / 2, 0, 0]} position={[0, -1.83, 1.5]}>
-            <meshBasicMaterial color="#4ECDC4" emissive="#4ECDC4" emissiveIntensity={0.2} />
+            <meshBasicMaterial color="#4ECDC4" />
           </Plane>
           <Plane args={[6, 0.08]} rotation={[-Math.PI / 2, 0, 0]} position={[0, -1.83, -1.5]}>
-            <meshBasicMaterial color="#4ECDC4" emissive="#4ECDC4" emissiveIntensity={0.2} />
+            <meshBasicMaterial color="#4ECDC4" />
           </Plane>
 
           {/* Court center circle */}
           <mesh position={[0, -1.83, 0]} rotation={[-Math.PI / 2, 0, 0]}>
             <ringGeometry args={[0.3, 0.35, 32]} />
-            <meshBasicMaterial color="#A855F7" emissive="#A855F7" emissiveIntensity={0.3} />
+            <meshBasicMaterial color="#A855F7" />
           </mesh>
         </>
       )}
