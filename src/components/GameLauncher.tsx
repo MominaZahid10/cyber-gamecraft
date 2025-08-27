@@ -12,29 +12,32 @@ const GameLauncher: React.FC<GameLauncherProps> = ({ onGameSelect }) => {
     {
       id: 'fighting' as const,
       title: 'FIGHTING ARENA',
-      description: 'Realistic combat with advanced character movements and combat physics',
+      description: 'Engage in intense combat with hyper-realistic physics and dynamic characters.',
       color: 'text-primary',
       bgColor: 'from-primary/30 to-gaming-teal/20',
       icon: '🥊',
-      gradient: 'bg-gradient-to-br from-primary/20 via-gaming-teal/10 to-gaming-purple/15'
+      gradient: 'bg-gradient-to-br from-primary/20 via-gaming-teal/10 to-gaming-purple/15',
+      buttonText: 'Enter Arena'
     },
     {
       id: 'badminton' as const,
       title: 'BADMINTON COURT',
-      description: 'Professional badminton with realistic shuttle physics and racket mechanics',
+      description: 'Experience pro-level badminton with precise shuttlecock physics and fluid racket controls.',
       color: 'text-gaming-purple',
       bgColor: 'from-gaming-purple/30 to-gaming-magenta/20',
       icon: '🏸',
-      gradient: 'bg-gradient-to-br from-gaming-purple/20 via-accent/10 to-gaming-teal/15'
+      gradient: 'bg-gradient-to-br from-gaming-purple/20 via-accent/10 to-gaming-teal/15',
+      buttonText: 'Start Match'
     },
     {
       id: 'racing' as const,
-      title: 'CAR RACING TRACK',
-      description: 'High-speed racing with realistic car physics and enhanced environments',
+      title: 'RACING CIRCUIT',
+      description: 'Push the limits with high-octane racing, featuring stunning tracks and realistic vehicle handling.',
       color: 'text-gaming-orange',
       bgColor: 'from-gaming-orange/30 to-gaming-yellow/20',
       icon: '🏎️',
-      gradient: 'bg-gradient-to-br from-gaming-orange/20 via-gaming-yellow/10 to-primary/15'
+      gradient: 'bg-gradient-to-br from-gaming-orange/20 via-gaming-yellow/10 to-primary/15',
+      buttonText: 'Begin Race'
     }
   ];
 
@@ -58,12 +61,9 @@ const GameLauncher: React.FC<GameLauncherProps> = ({ onGameSelect }) => {
               MULTI GAME ARENA
             </h1>
           </div>
-          <div className="text-2xl font-medium text-foreground/90 mb-4">
-            Ultimate Gaming Experience
+          <div className="text-xl font-medium text-foreground/90 mb-4">
+            One destination, three electrifying challenges. Test your skills in fighting, badminton, and car racing.
           </div>
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            Master three epic challenges: Fighting, Badminton, and Car Racing with realistic physics
-          </p>
         </motion.div>
 
         {/* Game Selection Grid */}
@@ -100,7 +100,7 @@ const GameLauncher: React.FC<GameLauncherProps> = ({ onGameSelect }) => {
                     whileTap={{ scale: 0.98 }}
                   >
                     <div className="btn-gaming w-full py-3 text-center font-gaming font-bold text-base tracking-widest">
-                      INITIALIZE
+                      {game.buttonText}
                     </div>
                   </motion.div>
                 </CardContent>
