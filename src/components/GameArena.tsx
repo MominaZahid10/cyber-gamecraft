@@ -742,56 +742,115 @@ const RacingCar = ({ position, color, isPlayer = false }: { position: [number, n
 const ArenaEnvironment = ({ gameType }: { gameType: 'fighting' | 'badminton' | 'racing' }) => {
   return (
     <>
-      {/* Arena Floor */}
-      <Plane args={[20, 20]} rotation={[-Math.PI / 2, 0, 0]} position={[0, -2, 0]}>
-        <meshPhongMaterial color="#1a1a1a" />
+      {/* Enhanced Arena Floor with professional gaming aesthetics */}
+      <Plane args={[25, 25]} rotation={[-Math.PI / 2, 0, 0]} position={[0, -2, 0]}>
+        <meshPhongMaterial
+          color={gameType === 'fighting' ? "#0D1B2A" : gameType === 'badminton' ? "#1A2B1A" : "#2A2A2A"}
+          shininess={30}
+          specular="#4ECDC4"
+        />
       </Plane>
+
+      {/* Arena floor grid pattern */}
+      {Array.from({ length: 10 }, (_, i) => (
+        <React.Fragment key={i}>
+          <Plane args={[0.05, 25]} rotation={[-Math.PI / 2, 0, 0]} position={[-10 + i * 2, -1.99, 0]}>
+            <meshBasicMaterial color="#4ECDC4" transparent opacity={0.3} />
+          </Plane>
+          <Plane args={[25, 0.05]} rotation={[-Math.PI / 2, 0, 0]} position={[0, -1.99, -10 + i * 2]}>
+            <meshBasicMaterial color="#4ECDC4" transparent opacity={0.3} />
+          </Plane>
+        </React.Fragment>
+      ))}
       
-      {/* Arena Walls for fighting game */}
+      {/* Enhanced Arena Walls for fighting game */}
       {gameType === 'fighting' && (
         <>
-          <Plane args={[20, 10]} position={[0, 3, -10]}>
-            <meshPhongMaterial color="#2a2a2a" />
+          {/* Back wall with gaming aesthetics */}
+          <Plane args={[25, 12]} position={[0, 4, -12]}>
+            <meshPhongMaterial
+              color="#1A1A2E"
+              emissive="#4ECDC4"
+              emissiveIntensity={0.1}
+            />
           </Plane>
-          <Plane args={[20, 10]} rotation={[0, Math.PI, 0]} position={[0, 3, 10]}>
-            <meshPhongMaterial color="#2a2a2a" />
+          <Plane args={[25, 12]} rotation={[0, Math.PI, 0]} position={[0, 4, 12]}>
+            <meshPhongMaterial
+              color="#1A1A2E"
+              emissive="#A855F7"
+              emissiveIntensity={0.1}
+            />
           </Plane>
+
+          {/* Side walls */}
+          <Plane args={[24, 12]} rotation={[0, Math.PI / 2, 0]} position={[-12, 4, 0]}>
+            <meshPhongMaterial color="#16213E" />
+          </Plane>
+          <Plane args={[24, 12]} rotation={[0, -Math.PI / 2, 0]} position={[12, 4, 0]}>
+            <meshPhongMaterial color="#16213E" />
+          </Plane>
+
+          {/* LED strips on walls */}
+          {Array.from({ length: 8 }, (_, i) => (
+            <React.Fragment key={i}>
+              <Box args={[2, 0.1, 0.1]} position={[-10 + i * 2.5, 7, -11.9]}>
+                <meshBasicMaterial color="#4ECDC4" />
+              </Box>
+              <Box args={[2, 0.1, 0.1]} position={[-10 + i * 2.5, 7, 11.9]}>
+                <meshBasicMaterial color="#A855F7" />
+              </Box>
+            </React.Fragment>
+          ))}
         </>
       )}
       
       {/* Professional Badminton Court */}
       {gameType === 'badminton' && (
         <>
-          {/* Net */}
+          {/* Enhanced Professional Net */}
           <Box args={[0.08, 2.2, 8]} position={[0, 0.1, 0]}>
-            <meshBasicMaterial color="#FFFFFF" />
+            <meshPhongMaterial color="#FFFFFF" shininess={100} />
           </Box>
           <mesh position={[0, 1.1, 0]} rotation={[0, 0, 0]}>
             <planeGeometry args={[8, 2]} />
-            <meshBasicMaterial color="#FFFFFF" wireframe transparent opacity={0.8} />
+            <meshBasicMaterial color="#E0E0E0" wireframe transparent opacity={0.9} />
           </mesh>
+
+          {/* Net posts */}
+          <Box args={[0.15, 2.5, 0.15]} position={[0, 1.25, 4]}>
+            <meshPhongMaterial color="#2D1B69" />
+          </Box>
+          <Box args={[0.15, 2.5, 0.15]} position={[0, 1.25, -4]}>
+            <meshPhongMaterial color="#2D1B69" />
+          </Box>
           
-          {/* Court lines */}
-          <Plane args={[12, 0.1]} rotation={[-Math.PI / 2, 0, 0]} position={[0, -1.85, 3]}>
+          {/* Enhanced Court lines with glow effect */}
+          <Plane args={[14, 0.1]} rotation={[-Math.PI / 2, 0, 0]} position={[0, -1.84, 4]}>
             <meshBasicMaterial color="#FFFFFF" />
           </Plane>
-          <Plane args={[12, 0.1]} rotation={[-Math.PI / 2, 0, 0]} position={[0, -1.85, -3]}>
+          <Plane args={[14, 0.1]} rotation={[-Math.PI / 2, 0, 0]} position={[0, -1.84, -4]}>
             <meshBasicMaterial color="#FFFFFF" />
           </Plane>
-          <Plane args={[0.1, 6]} rotation={[-Math.PI / 2, 0, 0]} position={[6, -1.85, 0]}>
+          <Plane args={[0.1, 8]} rotation={[-Math.PI / 2, 0, 0]} position={[7, -1.84, 0]}>
             <meshBasicMaterial color="#FFFFFF" />
           </Plane>
-          <Plane args={[0.1, 6]} rotation={[-Math.PI / 2, 0, 0]} position={[-6, -1.85, 0]}>
+          <Plane args={[0.1, 8]} rotation={[-Math.PI / 2, 0, 0]} position={[-7, -1.84, 0]}>
             <meshBasicMaterial color="#FFFFFF" />
           </Plane>
-          
-          {/* Service lines */}
-          <Plane args={[6, 0.05]} rotation={[-Math.PI / 2, 0, 0]} position={[0, -1.84, 1.5]}>
-            <meshBasicMaterial color="#FFFFFF" />
+
+          {/* Service lines with enhanced visibility */}
+          <Plane args={[6, 0.08]} rotation={[-Math.PI / 2, 0, 0]} position={[0, -1.83, 1.5]}>
+            <meshBasicMaterial color="#4ECDC4" emissive="#4ECDC4" emissiveIntensity={0.2} />
           </Plane>
-          <Plane args={[6, 0.05]} rotation={[-Math.PI / 2, 0, 0]} position={[0, -1.84, -1.5]}>
-            <meshBasicMaterial color="#FFFFFF" />
+          <Plane args={[6, 0.08]} rotation={[-Math.PI / 2, 0, 0]} position={[0, -1.83, -1.5]}>
+            <meshBasicMaterial color="#4ECDC4" emissive="#4ECDC4" emissiveIntensity={0.2} />
           </Plane>
+
+          {/* Court center circle */}
+          <mesh position={[0, -1.83, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+            <ringGeometry args={[0.3, 0.35, 32]} />
+            <meshBasicMaterial color="#A855F7" emissive="#A855F7" emissiveIntensity={0.3} />
+          </mesh>
         </>
       )}
       
@@ -888,12 +947,48 @@ const ArenaEnvironment = ({ gameType }: { gameType: 'fighting' | 'badminton' | '
         </>
       )}
       
-      {/* Professional Gaming Lighting */}
-      <ambientLight intensity={0.4} />
-      <directionalLight position={[12, 8, 6]} intensity={1.2} color="#4ECDC4" castShadow />
-      <directionalLight position={[-8, 6, -4]} intensity={0.8} color="#A855F7" />
-      <pointLight position={[0, 6, 0]} intensity={0.6} color="#FFFFFF" />
-      <spotLight position={[0, 10, 0]} intensity={0.8} angle={Math.PI / 3} penumbra={0.5} color="#4ECDC4" />
+      {/* Enhanced Professional Gaming Lighting */}
+      <ambientLight intensity={0.3} color="#2A2A4A" />
+
+      {/* Main arena lighting */}
+      <directionalLight
+        position={[15, 12, 8]}
+        intensity={1.5}
+        color={gameType === 'fighting' ? "#4ECDC4" : gameType === 'badminton' ? "#A855F7" : "#FFD700"}
+        castShadow
+        shadow-mapSize={[2048, 2048]}
+        shadow-camera-far={50}
+        shadow-camera-left={-15}
+        shadow-camera-right={15}
+        shadow-camera-top={15}
+        shadow-camera-bottom={-15}
+      />
+
+      {/* Accent lighting */}
+      <directionalLight
+        position={[-10, 8, -6]}
+        intensity={0.8}
+        color={gameType === 'fighting' ? "#A855F7" : gameType === 'badminton' ? "#4ECDC4" : "#FF6B35"}
+      />
+
+      {/* Central spotlight */}
+      <spotLight
+        position={[0, 15, 0]}
+        intensity={1.2}
+        angle={Math.PI / 4}
+        penumbra={0.3}
+        color="#FFFFFF"
+        castShadow
+      />
+
+      {/* Rim lighting */}
+      <pointLight position={[-8, 4, 8]} intensity={0.5} color="#4ECDC4" />
+      <pointLight position={[8, 4, -8]} intensity={0.5} color="#A855F7" />
+      <pointLight position={[8, 4, 8]} intensity={0.5} color="#FFD700" />
+      <pointLight position={[-8, 4, -8]} intensity={0.5} color="#FF6B35" />
+
+      {/* Atmospheric fog effect */}
+      <fog attach="fog" args={['#1A1A2E', 15, 40]} />
     </>
   );
 };
@@ -993,7 +1088,9 @@ const GameArena: React.FC<GameArenaProps> = ({ gameType, onGameChange, showAnaly
           gl={{
             antialias: true,
             alpha: false,
-            powerPreference: "high-performance"
+            powerPreference: "high-performance",
+            toneMapping: THREE.ACESFilmicToneMapping,
+            toneMappingExposure: 1.2
           }}
         >
           <CameraController gameType={gameType} />
