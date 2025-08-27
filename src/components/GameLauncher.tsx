@@ -8,7 +8,18 @@ interface GameLauncherProps {
 }
 
 const GameLauncher: React.FC<GameLauncherProps> = ({ onGameSelect }) => {
-  const games = [
+  interface Game {
+    id: 'fighting' | 'badminton' | 'racing';
+    title: string;
+    description: string;
+    color: string;
+    bgColor: string;
+    icon: string;
+    gradient: string;
+    buttonText: string;
+  }
+
+  const games: Game[] = [
     {
       id: 'fighting' as const,
       title: 'FIGHTING ARENA',
