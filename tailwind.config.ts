@@ -26,7 +26,8 @@ export default {
 				foreground: 'hsl(var(--foreground))',
 				primary: {
 					DEFAULT: 'hsl(var(--primary))',
-					foreground: 'hsl(var(--primary-foreground))'
+					foreground: 'hsl(var(--primary-foreground))',
+					glow: 'hsl(var(--primary-glow))'
 				},
 				secondary: {
 					DEFAULT: 'hsl(var(--secondary))',
@@ -52,6 +53,12 @@ export default {
 					DEFAULT: 'hsl(var(--card))',
 					foreground: 'hsl(var(--card-foreground))'
 				},
+				// Gaming Colors
+				gaming: {
+					orange: 'hsl(var(--gaming-orange))',
+					purple: 'hsl(var(--gaming-purple))',
+					yellow: 'hsl(var(--gaming-yellow))'
+				},
 				sidebar: {
 					DEFAULT: 'hsl(var(--sidebar-background))',
 					foreground: 'hsl(var(--sidebar-foreground))',
@@ -62,6 +69,24 @@ export default {
 					border: 'hsl(var(--sidebar-border))',
 					ring: 'hsl(var(--sidebar-ring))'
 				}
+			},
+			fontFamily: {
+				sans: ['Inter', 'system-ui', 'sans-serif'],
+				gaming: ['Orbitron', 'monospace'],
+				mono: ['JetBrains Mono', 'monospace']
+			},
+			backgroundImage: {
+				'gradient-gaming': 'var(--gradient-gaming)',
+				'gradient-primary': 'var(--gradient-primary)',
+				'gradient-arena': 'var(--gradient-arena)'
+			},
+			boxShadow: {
+				'gaming': 'var(--shadow-gaming)',
+				'accent': 'var(--shadow-accent)',
+				'intense': 'var(--shadow-intense)'
+			},
+			transitionTimingFunction: {
+				'gaming': 'var(--bounce-gaming)'
 			},
 			borderRadius: {
 				lg: 'var(--radius)',
