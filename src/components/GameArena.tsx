@@ -305,111 +305,258 @@ const BadmintonPlayer = ({ position, color, isPlayer = false }: { position: [num
   const groupRef = useRef<THREE.Group>(null);
   const racketRef = useRef<THREE.Group>(null);
   const bodyRef = useRef<THREE.Mesh>(null);
+  const leftArmRef = useRef<THREE.Mesh>(null);
+  const rightArmRef = useRef<THREE.Mesh>(null);
+  const leftLegRef = useRef<THREE.Mesh>(null);
+  const rightLegRef = useRef<THREE.Mesh>(null);
   const [playerPos, setPlayerPos] = useState(position);
   const [isSwinging, setIsSwinging] = useState(false);
+  const [isMoving, setIsMoving] = useState(false);
+  const [racketPower, setRacketPower] = useState(0);
+  const [facingDirection, setFacingDirection] = useState(isPlayer ? 1 : -1);
 
-  useFrame((state) => {
-    if (bodyRef.current && !isSwinging) {
-      // Natural movement and breathing
-      bodyRef.current.position.y = playerPos[1] + Math.sin(state.clock.elapsedTime * 1.2) * 0.04;
-      
-      // Racket ready position movement
-      if (racketRef.current) {
-        racketRef.current.rotation.z = Math.sin(state.clock.elapsedTime * 0.5) * 0.1;
+  useFrame((state, delta) => {
+    if (bodyRef.current) {
+      if (!isSwinging && !isMoving) {
+        // Natural breathing and ready stance
+        bodyRef.current.position.y = playerPos[1] + Math.sin(state.clock.elapsedTime * 1.2) * 0.03;
+
+        // Racket ready position with subtle movement
+        if (racketRef.current) {
+          racketRef.current.rotation.z = Math.sin(state.clock.elapsedTime * 0.8) * 0.08;
+          racketRef.current.position.y = 0.4 + Math.sin(state.clock.elapsedTime * 1.5) * 0.02;
+        }
+
+        // Subtle arm sway
+        if (leftArmRef.current && rightArmRef.current) {
+          leftArmRef.current.rotation.z = Math.sin(state.clock.elapsedTime * 0.6) * 0.05;
+          rightArmRef.current.rotation.z = -Math.sin(state.clock.elapsedTime * 0.6) * 0.05;
+        }
+      }
+
+      // Enhanced walking animation
+      if (isMoving && !isSwinging) {
+        const walkCycle = state.clock.elapsedTime * 6;
+
+        if (leftLegRef.current && rightLegRef.current) {
+          leftLegRef.current.rotation.x = Math.sin(walkCycle) * 0.3;
+          rightLegRef.current.rotation.x = Math.sin(walkCycle + Math.PI) * 0.3;
+        }
+
+        // Walking bob
+        bodyRef.current.position.y = playerPos[1] + Math.abs(Math.sin(walkCycle * 2)) * 0.04;
+
+        // Racket movement during walk
+        if (racketRef.current) {
+          racketRef.current.rotation.x = Math.sin(walkCycle) * 0.1;
+        }
+      }
+
+      // Face the net
+      if (groupRef.current) {
+        groupRef.current.rotation.y = facingDirection < 0 ? Math.PI : 0;
       }
     }
   });
 
-  // Player movement for badminton
+  // Enhanced player movement for badminton
   useEffect(() => {
     if (!isPlayer) return;
 
-    const handleMovement = (event: KeyboardEvent) => {
+    const handleKeyDown = (event: KeyboardEvent) => {
       if (isSwinging) return;
-      
-      const moveSpeed = 0.15;
+
+      const moveSpeed = 0.12;
       switch (event.key.toLowerCase()) {
         case 'w':
-          setPlayerPos(prev => [prev[0], prev[1], Math.max(-4, prev[2] - moveSpeed)]);
+          setPlayerPos(prev => [prev[0], prev[1], Math.max(-5, prev[2] - moveSpeed)]);
+          setIsMoving(true);
           break;
         case 's':
-          setPlayerPos(prev => [prev[0], prev[1], Math.min(4, prev[2] + moveSpeed)]);
+          setPlayerPos(prev => [prev[0], prev[1], Math.min(5, prev[2] + moveSpeed)]);
+          setIsMoving(true);
           break;
         case 'a':
-          setPlayerPos(prev => [Math.max(-6, prev[0] - moveSpeed), prev[1], prev[2]]);
+          setPlayerPos(prev => [Math.max(-7, prev[0] - moveSpeed), prev[1], prev[2]]);
+          setIsMoving(true);
           break;
         case 'd':
-          setPlayerPos(prev => [Math.min(6, prev[0] + moveSpeed), prev[1], prev[2]]);
+          setPlayerPos(prev => [Math.min(7, prev[0] + moveSpeed), prev[1], prev[2]]);
+          setIsMoving(true);
           break;
         case ' ':
-          // Swing animation
-          performSwing();
+          // Power swing - hold for more power
+          if (!isSwinging) {
+            setRacketPower(Math.min(racketPower + 0.1, 1));
+          }
           break;
       }
     };
 
-    window.addEventListener('keydown', handleMovement);
-    return () => window.removeEventListener('keydown', handleMovement);
-  }, [isPlayer, isSwinging]);
+    const handleKeyUp = (event: KeyboardEvent) => {
+      switch (event.key.toLowerCase()) {
+        case 'w':
+        case 's':
+        case 'a':
+        case 'd':
+          setIsMoving(false);
+          break;
+        case ' ':
+          // Release swing with accumulated power
+          if (!isSwinging) {
+            performSwing(racketPower);
+            setRacketPower(0);
+          }
+          break;
+      }
+    };
 
-  const performSwing = () => {
+    window.addEventListener('keydown', handleKeyDown);
+    window.addEventListener('keyup', handleKeyUp);
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+      window.removeEventListener('keyup', handleKeyUp);
+    };
+  }, [isPlayer, isSwinging, racketPower]);
+
+  const performSwing = (power: number = 0.5) => {
     if (isSwinging || !racketRef.current) return;
-    
+
     setIsSwinging(true);
-    racketRef.current.rotation.z = -Math.PI / 2;
-    
+
+    // Realistic swing animation with power variation
+    const swingIntensity = 0.5 + power * 0.8;
+    const swingSpeed = 200 + power * 200;
+
+    // Backswing
+    racketRef.current.rotation.z = Math.PI / 4;
+    racketRef.current.rotation.x = -Math.PI / 6;
+
+    // Body rotation for power
+    if (bodyRef.current) {
+      bodyRef.current.rotation.y = facingDirection * -0.2 * swingIntensity;
+    }
+
     setTimeout(() => {
       if (racketRef.current) {
+        // Forward swing
+        racketRef.current.rotation.z = -Math.PI / 2 * swingIntensity;
+        racketRef.current.rotation.x = Math.PI / 4;
+
+        // Arm extension
+        if (rightArmRef.current) {
+          rightArmRef.current.rotation.x = -Math.PI / 3 * swingIntensity;
+        }
+      }
+    }, 100);
+
+    setTimeout(() => {
+      // Follow through
+      if (racketRef.current && bodyRef.current && rightArmRef.current) {
+        racketRef.current.rotation.z = -Math.PI / 6;
+        racketRef.current.rotation.x = 0;
+        rightArmRef.current.rotation.x = 0;
+        bodyRef.current.rotation.y = 0;
+      }
+    }, swingSpeed);
+
+    setTimeout(() => {
+      // Return to ready position
+      if (racketRef.current) {
         racketRef.current.rotation.z = 0;
+        racketRef.current.rotation.x = 0;
         setIsSwinging(false);
       }
-    }, 300);
+    }, swingSpeed + 200);
   };
 
   return (
     <group ref={groupRef} position={playerPos}>
       {/* Athletic body */}
-      <Box ref={bodyRef} args={[0.35, 1.1, 0.25]}>
+      <Box ref={bodyRef} args={[0.32, 1.0, 0.22]} position={[0, 0.1, 0]}>
         <meshPhongMaterial color={color} />
       </Box>
-      
+
       {/* Head */}
-      <Sphere args={[0.14]} position={[0, 0.75, 0]}>
+      <Sphere args={[0.13]} position={[0, 0.7, 0]}>
         <meshPhongMaterial color={color} emissive={color} emissiveIntensity={0.05} />
       </Sphere>
+
+      {/* Enhanced Arms with shoulders */}
+      <Sphere args={[0.08]} position={[-0.25, 0.45, 0]}>
+        <meshPhongMaterial color={color} />
+      </Sphere>
+      <Box ref={leftArmRef} args={[0.14, 0.55, 0.14]} position={[-0.25, 0.05, 0]}>
+        <meshPhongMaterial color={color} />
+      </Box>
+
+      <Sphere args={[0.08]} position={[0.25, 0.45, 0]}>
+        <meshPhongMaterial color={color} />
+      </Sphere>
+      <Box ref={rightArmRef} args={[0.14, 0.55, 0.14]} position={[0.25, 0.05, 0]}>
+        <meshPhongMaterial color={color} />
+      </Box>
+
+      {/* Enhanced Legs with hips */}
+      <Sphere args={[0.08]} position={[-0.14, -0.5, 0]}>
+        <meshPhongMaterial color={color} />
+      </Sphere>
+      <Box ref={leftLegRef} args={[0.14, 0.75, 0.14]} position={[-0.14, -0.85, 0]}>
+        <meshPhongMaterial color={color} />
+      </Box>
+
+      <Sphere args={[0.08]} position={[0.14, -0.5, 0]}>
+        <meshPhongMaterial color={color} />
+      </Sphere>
+      <Box ref={rightLegRef} args={[0.14, 0.75, 0.14]} position={[0.14, -0.85, 0]}>
+        <meshPhongMaterial color={color} />
+      </Box>
+
+      {/* Athletic shoes */}
+      <Box args={[0.18, 0.08, 0.26]} position={[-0.14, -1.26, 0.04]}>
+        <meshPhongMaterial color="#FFFFFF" />
+      </Box>
+      <Box args={[0.18, 0.08, 0.26]} position={[0.14, -1.26, 0.04]}>
+        <meshPhongMaterial color="#FFFFFF" />
+      </Box>
       
-      {/* Arms */}
-      <Box args={[0.16, 0.65, 0.16]} position={[-0.28, 0.25, 0]}>
-        <meshPhongMaterial color={color} />
-      </Box>
-      <Box args={[0.16, 0.65, 0.16]} position={[0.28, 0.25, 0]}>
-        <meshPhongMaterial color={color} />
-      </Box>
-      
-      {/* Legs */}
-      <Box args={[0.16, 0.85, 0.16]} position={[-0.16, -0.95, 0]}>
-        <meshPhongMaterial color={color} />
-      </Box>
-      <Box args={[0.16, 0.85, 0.16]} position={[0.16, -0.95, 0]}>
-        <meshPhongMaterial color={color} />
-      </Box>
-      
-      {/* Professional Racket */}
-      <group ref={racketRef} position={[0.25, 0.4, 0]} rotation={[0, 0, Math.PI / 6]}>
+      {/* Enhanced Professional Racket */}
+      <group ref={racketRef} position={[0.28, 0.4, 0]} rotation={[0, 0, Math.PI / 6]}>
+        {/* Grip */}
+        <Box args={[0.025, 0.25, 0.025]} position={[0, -0.12, 0]}>
+          <meshPhongMaterial color="#1A1A1A" />
+        </Box>
         {/* Handle */}
-        <Box args={[0.03, 0.7, 0.03]}>
+        <Box args={[0.032, 0.45, 0.032]} position={[0, 0.1, 0]}>
           <meshPhongMaterial color="#2D1B69" />
         </Box>
+        {/* Racket head frame */}
+        <mesh position={[0, 0.48, 0]}>
+          <ringGeometry args={[0.14, 0.16, 20]} />
+          <meshPhongMaterial color="#FF6B35" />
+        </mesh>
         {/* Racket head - realistic oval */}
-        <mesh position={[0, 0.5, 0]}>
-          <ringGeometry args={[0.08, 0.18, 16]} />
+        <mesh position={[0, 0.48, 0]}>
+          <ringGeometry args={[0.08, 0.14, 16]} />
           <meshBasicMaterial color="#FFFFFF" side={THREE.DoubleSide} />
         </mesh>
-        {/* Strings */}
-        <mesh position={[0, 0.5, 0.01]}>
-          <ringGeometry args={[0.09, 0.17, 16]} />
-          <meshBasicMaterial color="#F0F0F0" wireframe />
+        {/* Enhanced string pattern */}
+        <mesh position={[0, 0.48, 0.005]}>
+          <ringGeometry args={[0.09, 0.135, 16]} />
+          <meshBasicMaterial color="#E0E0E0" wireframe />
         </mesh>
+        {/* Cross strings */}
+        <mesh position={[0, 0.48, -0.005]} rotation={[0, 0, Math.PI / 2]}>
+          <ringGeometry args={[0.09, 0.135, 16]} />
+          <meshBasicMaterial color="#E0E0E0" wireframe />
+        </mesh>
+
+        {/* Power indicator when charging */}
+        {racketPower > 0 && (
+          <Sphere args={[0.02 + racketPower * 0.05]} position={[0, 0.48, 0]}>
+            <meshBasicMaterial color="#4ECDC4" transparent opacity={0.6} />
+          </Sphere>
+        )}
       </group>
       
       {/* Professional effects */}
@@ -583,8 +730,8 @@ const GameArena: React.FC<GameArenaProps> = ({ gameType, onGameChange, showAnaly
       case 'badminton':
         return (
           <>
-            <BadmintonPlayer position={[-3, 0, 0]} color="#4ECDC4" isPlayer />
-            <BadmintonPlayer position={[3, 0, 0]} color="#A855F7" />
+            <BadmintonPlayer position={[-4, 0, 0]} color="#4ECDC4" isPlayer />
+            <BadmintonPlayer position={[4, 0, 0]} color="#A855F7" />
             {/* Realistic Shuttlecock with physics */}
             <Shuttlecock />
           </>
@@ -690,8 +837,8 @@ const GameArena: React.FC<GameArenaProps> = ({ gameType, onGameChange, showAnaly
             {gameType === 'badminton' && (
               <>
                 <div>WASD: Move</div>
-                <div>SPACE: Swing</div>
-                <div>Hold position for accuracy</div>
+                <div>SPACE: Swing (Hold for power)</div>
+                <div>Position for accuracy</div>
               </>
             )}
             {gameType === 'racing' && (
