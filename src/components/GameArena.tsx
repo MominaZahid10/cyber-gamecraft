@@ -567,42 +567,173 @@ const BadmintonPlayer = ({ position, color, isPlayer = false }: { position: [num
   );
 };
 
-// Racing Car Component
-const RacingCar = ({ position, color }: { position: [number, number, number], color: string }) => {
+// Enhanced Racing Car Component
+const RacingCar = ({ position, color, isPlayer = false }: { position: [number, number, number], color: string, isPlayer?: boolean }) => {
   const carRef = useRef<THREE.Group>(null);
+  const wheelRefs = useRef<THREE.Mesh[]>([]);
+  const [carPosition, setCarPosition] = useState(position);
+  const [velocity, setVelocity] = useState(0);
+  const [steering, setSteering] = useState(0);
+  const [isAccelerating, setIsAccelerating] = useState(false);
+  const [isBraking, setIsBraking] = useState(false);
 
-  useFrame((state) => {
+  useFrame((state, delta) => {
     if (carRef.current) {
-      // Engine vibration effect
-      carRef.current.position.z = position[2] + Math.sin(state.clock.elapsedTime * 20) * 0.01;
+      // Realistic car physics
+      let newVelocity = velocity;
+
+      if (isAccelerating) {
+        newVelocity = Math.min(velocity + delta * 3, 8);
+      } else if (isBraking) {
+        newVelocity = Math.max(velocity - delta * 5, -2);
+      } else {
+        // Natural deceleration
+        newVelocity = velocity * 0.98;
+      }
+
+      setVelocity(newVelocity);
+
+      // Update position based on velocity and steering
+      const newX = carPosition[0] + Math.sin(steering) * newVelocity * delta;
+      const newZ = carPosition[2] + Math.cos(steering) * newVelocity * delta;
+
+      // Keep car on track
+      const clampedX = Math.max(-6, Math.min(6, newX));
+      const clampedZ = Math.max(-15, Math.min(15, newZ));
+
+      setCarPosition([clampedX, -1.75, clampedZ]); // Car properly on ground
+
+      // Car rotation based on steering
+      carRef.current.rotation.y = steering;
+
+      // Wheel rotation based on speed
+      wheelRefs.current.forEach((wheel) => {
+        if (wheel) {
+          wheel.rotation.x += newVelocity * delta * 2;
+        }
+      });
+
+      // Engine vibration when accelerating
+      if (isAccelerating && Math.abs(newVelocity) > 0.1) {
+        carRef.current.position.y = carPosition[1] + Math.sin(state.clock.elapsedTime * 30) * 0.005;
+      } else {
+        carRef.current.position.y = carPosition[1];
+      }
     }
   });
 
+  // Enhanced car controls
+  useEffect(() => {
+    if (!isPlayer) return;
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      switch (event.key.toLowerCase()) {
+        case 'w':
+          setIsAccelerating(true);
+          break;
+        case 's':
+          setIsBraking(true);
+          break;
+        case 'a':
+          setSteering(prev => Math.max(prev - 0.05, -0.5));
+          break;
+        case 'd':
+          setSteering(prev => Math.min(prev + 0.05, 0.5));
+          break;
+      }
+    };
+
+    const handleKeyUp = (event: KeyboardEvent) => {
+      switch (event.key.toLowerCase()) {
+        case 'w':
+          setIsAccelerating(false);
+          break;
+        case 's':
+          setIsBraking(false);
+          break;
+        case 'a':
+        case 'd':
+          setSteering(0);
+          break;
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    window.addEventListener('keyup', handleKeyUp);
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+      window.removeEventListener('keyup', handleKeyUp);
+    };
+  }, [isPlayer]);
+
   return (
-    <group ref={carRef} position={position}>
-      {/* Car body */}
-      <Box args={[1.8, 0.4, 0.8]}>
+    <group ref={carRef} position={carPosition}>
+      {/* Enhanced car body */}
+      <Box args={[1.6, 0.3, 0.7]} position={[0, 0.1, 0]}>
+        <meshPhongMaterial color={color} shininess={100} />
+      </Box>
+
+      {/* Car cabin */}
+      <Box args={[1.2, 0.25, 0.6]} position={[0, 0.35, -0.1]}>
         <meshPhongMaterial color={color} />
       </Box>
-      
-      {/* Wheels */}
-      <Sphere args={[0.2]} position={[-0.6, -0.3, 0.5]}>
-        <meshPhongMaterial color="#333333" />
-      </Sphere>
-      <Sphere args={[0.2]} position={[0.6, -0.3, 0.5]}>
-        <meshPhongMaterial color="#333333" />
-      </Sphere>
-      <Sphere args={[0.2]} position={[-0.6, -0.3, -0.5]}>
-        <meshPhongMaterial color="#333333" />
-      </Sphere>
-      <Sphere args={[0.2]} position={[0.6, -0.3, -0.5]}>
-        <meshPhongMaterial color="#333333" />
-      </Sphere>
-      
+
+      {/* Realistic wheels with rims */}
+      {[[-0.7, -0.15, 0.4], [0.7, -0.15, 0.4], [-0.7, -0.15, -0.4], [0.7, -0.15, -0.4]].map((wheelPos, i) => (
+        <group key={i} position={wheelPos}>
+          {/* Tire */}
+          <Sphere ref={(el) => { if (el) wheelRefs.current[i] = el; }} args={[0.15]} scale={[1, 0.7, 1]}>
+            <meshPhongMaterial color="#2C2C2C" />
+          </Sphere>
+          {/* Rim */}
+          <Sphere args={[0.08]} scale={[1, 0.3, 1]}>
+            <meshPhongMaterial color="#C0C0C0" shininess={200} />
+          </Sphere>
+        </group>
+      ))}
+
       {/* Windshield */}
-      <Box args={[1.6, 0.3, 0.02]} position={[0, 0.15, 0.39]}>
-        <meshPhongMaterial color="#87CEEB" transparent opacity={0.7} />
+      <Box args={[1.1, 0.2, 0.02]} position={[0, 0.3, 0.28]}>
+        <meshPhongMaterial color="#4FC3F7" transparent opacity={0.8} />
       </Box>
+
+      {/* Rear windshield */}
+      <Box args={[1.0, 0.15, 0.02]} position={[0, 0.25, -0.28]}>
+        <meshPhongMaterial color="#4FC3F7" transparent opacity={0.8} />
+      </Box>
+
+      {/* Headlights */}
+      <Sphere args={[0.05]} position={[-0.5, 0.05, 0.35]}>
+        <meshBasicMaterial color="#FFFFFF" />
+      </Sphere>
+      <Sphere args={[0.05]} position={[0.5, 0.05, 0.35]}>
+        <meshBasicMaterial color="#FFFFFF" />
+      </Sphere>
+
+      {/* Taillights */}
+      <Sphere args={[0.04]} position={[-0.4, 0.05, -0.35]}>
+        <meshBasicMaterial color="#FF4444" />
+      </Sphere>
+      <Sphere args={[0.04]} position={[0.4, 0.05, -0.35]}>
+        <meshBasicMaterial color="#FF4444" />
+      </Sphere>
+
+      {/* Spoiler */}
+      <Box args={[1.2, 0.05, 0.15]} position={[0, 0.45, -0.3]}>
+        <meshPhongMaterial color={color} />
+      </Box>
+
+      {/* Speed effect when moving fast */}
+      {Math.abs(velocity) > 3 && (
+        <>
+          <Sphere args={[0.3]} position={[0, 0, -1]}>
+            <meshBasicMaterial color="#4ECDC4" transparent opacity={0.2} />
+          </Sphere>
+          <Sphere args={[0.2]} position={[0, 0, -1.5]}>
+            <meshBasicMaterial color="#A855F7" transparent opacity={0.15} />
+          </Sphere>
+        </>
+      )}
     </group>
   );
 };
@@ -664,19 +795,96 @@ const ArenaEnvironment = ({ gameType }: { gameType: 'fighting' | 'badminton' | '
         </>
       )}
       
-      {/* Racing track */}
+      {/* Enhanced Racing track with proper environment */}
       {gameType === 'racing' && (
         <>
-          <Plane args={[30, 4]} rotation={[-Math.PI / 2, 0, 0]} position={[0, -1.9, 0]}>
-            <meshPhongMaterial color="#333333" />
+          {/* Main track surface */}
+          <Plane args={[15, 40]} rotation={[-Math.PI / 2, 0, 0]} position={[0, -1.85, 0]}>
+            <meshPhongMaterial color="#2C2C2C" roughness={0.8} />
           </Plane>
-          {/* Track lines */}
-          <Plane args={[30, 0.1]} rotation={[-Math.PI / 2, 0, 0]} position={[0, -1.85, 1.8]}>
+
+          {/* Track borders */}
+          <Box args={[0.3, 0.2, 40]} position={[-7.5, -1.75, 0]}>
+            <meshPhongMaterial color="#FF4444" />
+          </Box>
+          <Box args={[0.3, 0.2, 40]} position={[7.5, -1.75, 0]}>
+            <meshPhongMaterial color="#FF4444" />
+          </Box>
+
+          {/* Center line */}
+          {Array.from({ length: 20 }, (_, i) => (
+            <Box key={i} args={[0.2, 0.02, 1.5]} position={[0, -1.83, -18 + i * 2]} rotation={[-Math.PI / 2, 0, 0]}>
+              <meshBasicMaterial color="#FFFF00" />
+            </Box>
+          ))}
+
+          {/* Lane dividers */}
+          {Array.from({ length: 20 }, (_, i) => (
+            <React.Fragment key={i}>
+              <Box args={[0.15, 0.02, 1]} position={[-3.5, -1.83, -18 + i * 2]} rotation={[-Math.PI / 2, 0, 0]}>
+                <meshBasicMaterial color="#FFFFFF" />
+              </Box>
+              <Box args={[0.15, 0.02, 1]} position={[3.5, -1.83, -18 + i * 2]} rotation={[-Math.PI / 2, 0, 0]}>
+                <meshBasicMaterial color="#FFFFFF" />
+              </Box>
+            </React.Fragment>
+          ))}
+
+          {/* Track barriers */}
+          {Array.from({ length: 10 }, (_, i) => (
+            <React.Fragment key={i}>
+              <Box args={[0.5, 1, 3]} position={[-9, -1, -15 + i * 6]}>
+                <meshPhongMaterial color="#E0E0E0" />
+              </Box>
+              <Box args={[0.5, 1, 3]} position={[9, -1, -15 + i * 6]}>
+                <meshPhongMaterial color="#E0E0E0" />
+              </Box>
+            </React.Fragment>
+          ))}
+
+          {/* Grandstands */}
+          <Box args={[3, 2, 15]} position={[-12, 0, 0]}>
+            <meshPhongMaterial color="#4A4A4A" />
+          </Box>
+          <Box args={[3, 2, 15]} position={[12, 0, 0]}>
+            <meshPhongMaterial color="#4A4A4A" />
+          </Box>
+
+          {/* Start/finish line */}
+          <Plane args={[15, 0.5]} rotation={[-Math.PI / 2, 0, 0]} position={[0, -1.82, 15]}>
             <meshBasicMaterial color="#FFFFFF" />
           </Plane>
-          <Plane args={[30, 0.1]} rotation={[-Math.PI / 2, 0, 0]} position={[0, -1.85, -1.8]}>
-            <meshBasicMaterial color="#FFFFFF" />
+
+          {/* Checkered pattern for start/finish */}
+          {Array.from({ length: 8 }, (_, i) => (
+            <Plane key={i} args={[1.8, 0.25]} rotation={[-Math.PI / 2, 0, 0]} position={[-6.75 + i * 1.9, -1.815, 15]}>
+              <meshBasicMaterial color={i % 2 === 0 ? "#000000" : "#FFFFFF"} />
+            </Plane>
+          ))}
+
+          {/* Tire stacks as decoration */}
+          {Array.from({ length: 6 }, (_, i) => (
+            <React.Fragment key={i}>
+              <Sphere args={[0.3]} scale={[1, 0.3, 1]} position={[-10, -1.55, -10 + i * 4]}>
+                <meshPhongMaterial color="#1A1A1A" />
+              </Sphere>
+              <Sphere args={[0.3]} scale={[1, 0.3, 1]} position={[10, -1.55, -10 + i * 4]}>
+                <meshPhongMaterial color="#1A1A1A" />
+              </Sphere>
+            </React.Fragment>
+          ))}
+
+          {/* Background environment */}
+          <Plane args={[100, 20]} position={[0, 8, -30]} rotation={[0, 0, 0]}>
+            <meshBasicMaterial color="#87CEEB" />
           </Plane>
+
+          {/* Mountains in background */}
+          {Array.from({ length: 5 }, (_, i) => (
+            <Cone key={i} args={[3, 6]} position={[-20 + i * 10, 1, -25]}>
+              <meshPhongMaterial color="#2E7D32" />
+            </Cone>
+          ))}
         </>
       )}
       
@@ -739,8 +947,9 @@ const GameArena: React.FC<GameArenaProps> = ({ gameType, onGameChange, showAnaly
       case 'racing':
         return (
           <>
-            <RacingCar position={[-1, 0, 0]} color="#00D4FF" />
-            <RacingCar position={[1, 0, -2]} color="#FF6B35" />
+            <RacingCar position={[-2, -1.75, 0]} color="#00D4FF" isPlayer />
+            <RacingCar position={[2, -1.75, -3]} color="#FF6B35" />
+            <RacingCar position={[0, -1.75, -6]} color="#A855F7" />
           </>
         );
       default:
@@ -843,9 +1052,9 @@ const GameArena: React.FC<GameArenaProps> = ({ gameType, onGameChange, showAnaly
             )}
             {gameType === 'racing' && (
               <>
-                <div>WASD: Drive</div>
-                <div>SPACE: Brake</div>
-                <div>SHIFT: Boost</div>
+                <div>W: Accelerate | S: Brake</div>
+                <div>A/D: Steer</div>
+                <div>Stay on track for speed</div>
               </>
             )}
           </div>
