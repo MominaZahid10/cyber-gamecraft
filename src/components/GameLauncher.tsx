@@ -11,27 +11,30 @@ const GameLauncher: React.FC<GameLauncherProps> = ({ onGameSelect }) => {
   const games = [
     {
       id: 'fighting' as const,
-      title: 'COMBAT ARENA',
-      description: 'Realistic martial arts combat with advanced physics',
+      title: 'NEXUS COMBAT',
+      description: 'Elite martial arts arena with dynamic combat physics',
       color: 'text-primary',
-      bgColor: 'from-primary/20 to-primary/5',
-      icon: '🥊'
+      bgColor: 'from-primary/30 to-gaming-teal/20',
+      icon: '⚔️',
+      gradient: 'bg-gradient-to-br from-primary/20 via-gaming-teal/10 to-gaming-purple/15'
     },
     {
       id: 'badminton' as const,
-      title: 'BADMINTON PRO',
-      description: 'Professional badminton with realistic shuttlecock physics',
-      color: 'text-accent',
-      bgColor: 'from-accent/20 to-accent/5',
-      icon: '🏸'
+      title: 'QUANTUM COURT',
+      description: 'Professional badminton arena with realistic physics simulation',
+      color: 'text-gaming-purple',
+      bgColor: 'from-gaming-purple/30 to-gaming-magenta/20',
+      icon: '🏸',
+      gradient: 'bg-gradient-to-br from-gaming-purple/20 via-accent/10 to-gaming-teal/15'
     },
     {
       id: 'racing' as const,
-      title: 'SPEED CIRCUIT',
-      description: 'High-speed racing with dynamic environments',
+      title: 'VELOCITY TRACK',
+      description: 'High-performance racing circuit with advanced vehicle dynamics',
       color: 'text-gaming-orange',
-      bgColor: 'from-gaming-orange/20 to-gaming-orange/5',
-      icon: '🏎️'
+      bgColor: 'from-gaming-orange/30 to-gaming-yellow/20',
+      icon: '🏁',
+      gradient: 'bg-gradient-to-br from-gaming-orange/20 via-gaming-yellow/10 to-primary/15'
     }
   ];
 
@@ -48,13 +51,18 @@ const GameLauncher: React.FC<GameLauncherProps> = ({ onGameSelect }) => {
           initial={{ opacity: 0, y: -50 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
-          className="text-center mb-12"
+          className="text-center mb-16"
         >
-          <h1 className="text-6xl font-bold text-glow mb-4 bg-gradient-gaming bg-clip-text text-transparent">
-            AI MULTI-GAME ARENA
-          </h1>
-          <p className="text-xl text-muted-foreground">
-            Select your battleground and prove your skills
+          <div className="inline-block bg-gradient-hero bg-clip-text text-transparent mb-6">
+            <h1 className="text-7xl font-gaming font-black tracking-wider drop-shadow-2xl">
+              NEXUS ARENA
+            </h1>
+          </div>
+          <div className="text-2xl font-medium text-foreground/90 mb-4">
+            Professional Gaming Experience
+          </div>
+          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+            Enter the next-generation gaming arena where physics meets precision
           </p>
         </motion.div>
 
@@ -70,33 +78,36 @@ const GameLauncher: React.FC<GameLauncherProps> = ({ onGameSelect }) => {
               whileTap={{ scale: 0.95 }}
             >
               <Card 
-                className={`gaming-card cursor-pointer h-80 overflow-hidden relative group bg-gradient-to-br ${game.bgColor} border-2 hover:border-primary/50 transition-all duration-300`}
+                className={`cursor-pointer h-96 overflow-hidden relative group border-2 border-border/50 hover:border-primary/60 transition-all duration-500 backdrop-blur-sm ${game.gradient} hover:scale-[1.02] active:scale-[0.98]`}
                 onClick={() => onGameSelect(game.id)}
               >
-                <CardContent className="p-8 h-full flex flex-col justify-between">
-                  <div>
-                    <div className="text-6xl mb-4 text-center group-hover:animate-bounce">
+                <CardContent className="p-8 h-full flex flex-col justify-between relative z-10">
+                  <div className="text-center">
+                    <div className="text-7xl mb-6 group-hover:scale-110 transition-transform duration-300 filter drop-shadow-lg">
                       {game.icon}
                     </div>
-                    <h3 className={`text-2xl font-bold mb-3 ${game.color} text-center`}>
+                    <h3 className={`text-3xl font-gaming font-bold mb-4 ${game.color} tracking-wide`}>
                       {game.title}
                     </h3>
-                    <p className="text-muted-foreground text-center">
+                    <p className="text-foreground/80 text-base leading-relaxed">
                       {game.description}
                     </p>
                   </div>
                   
-                  <motion.button
-                    className="btn-gaming w-full mt-6"
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
+                  <motion.div
+                    className="mt-8"
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
                   >
-                    ENTER ARENA
-                  </motion.button>
+                    <div className="btn-gaming w-full py-4 text-center font-gaming font-bold text-lg tracking-widest">
+                      INITIALIZE
+                    </div>
+                  </motion.div>
                 </CardContent>
                 
-                {/* Hover effect overlay */}
-                <div className="absolute inset-0 bg-gradient-gaming opacity-0 group-hover:opacity-10 transition-opacity duration-300" />
+                {/* Professional glow effect */}
+                <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-accent/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                <div className="absolute inset-0 bg-gradient-gaming opacity-0 group-hover:opacity-5 transition-opacity duration-500" />
               </Card>
             </motion.div>
           ))}

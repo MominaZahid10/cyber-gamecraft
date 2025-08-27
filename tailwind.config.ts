@@ -53,11 +53,13 @@ export default {
 					DEFAULT: 'hsl(var(--card))',
 					foreground: 'hsl(var(--card-foreground))'
 				},
-				// Gaming Colors
+				// Professional Gaming Colors
 				gaming: {
 					orange: 'hsl(var(--gaming-orange))',
 					purple: 'hsl(var(--gaming-purple))',
-					yellow: 'hsl(var(--gaming-yellow))'
+					yellow: 'hsl(var(--gaming-yellow))',
+					teal: 'hsl(var(--gaming-teal))',
+					magenta: 'hsl(var(--gaming-magenta))'
 				},
 				sidebar: {
 					DEFAULT: 'hsl(var(--sidebar-background))',
@@ -78,7 +80,8 @@ export default {
 			backgroundImage: {
 				'gradient-gaming': 'var(--gradient-gaming)',
 				'gradient-primary': 'var(--gradient-primary)',
-				'gradient-arena': 'var(--gradient-arena)'
+				'gradient-arena': 'var(--gradient-arena)',
+				'gradient-hero': 'var(--gradient-hero)'
 			},
 			boxShadow: {
 				'gaming': 'var(--shadow-gaming)',

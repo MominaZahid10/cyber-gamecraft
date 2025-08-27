@@ -3,6 +3,7 @@ import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import { OrbitControls, Box, Sphere, Plane, Text3D, Environment } from '@react-three/drei';
 import { motion } from 'framer-motion';
 import * as THREE from 'three';
+import Shuttlecock from './Shuttlecock';
 
 interface GameArenaProps {
   gameType: 'fighting' | 'badminton' | 'racing';
@@ -11,15 +12,26 @@ interface GameArenaProps {
   onToggleAnalytics: () => void;
 }
 
-// Fighter Character Component
+// Fighter Character Component - Realistic with animations
 const FighterCharacter = ({ position, color, isPlayer = false }: { position: [number, number, number], color: string, isPlayer?: boolean }) => {
-  const meshRef = useRef<THREE.Mesh>(null);
+  const meshRef = useRef<THREE.Group>(null);
+  const leftArmRef = useRef<THREE.Mesh>(null);
+  const rightArmRef = useRef<THREE.Mesh>(null);
   const [isAttacking, setIsAttacking] = useState(false);
+  const [position2D, setPosition2D] = useState(position);
 
   useFrame((state, delta) => {
     if (meshRef.current && !isAttacking) {
-      // Idle animation - slight breathing motion
-      meshRef.current.position.y = position[1] + Math.sin(state.clock.elapsedTime * 2) * 0.05;
+      // Realistic idle animation - breathing and slight movement
+      meshRef.current.position.y = position2D[1] + Math.sin(state.clock.elapsedTime * 1.5) * 0.03;
+      
+      // Arm movement during idle
+      if (leftArmRef.current) {
+        leftArmRef.current.rotation.z = Math.sin(state.clock.elapsedTime * 0.8) * 0.1;
+      }
+      if (rightArmRef.current) {
+        rightArmRef.current.rotation.z = -Math.sin(state.clock.elapsedTime * 0.8) * 0.1;
+      }
     }
   });
 
@@ -27,104 +39,239 @@ const FighterCharacter = ({ position, color, isPlayer = false }: { position: [nu
     if (!meshRef.current || isAttacking) return;
     
     setIsAttacking(true);
-    const originalX = meshRef.current.position.x;
+    const originalX = position2D[0];
     
-    // Attack animation
-    meshRef.current.position.x += isPlayer ? 0.3 : -0.3;
+    // Realistic punch animation with arm movement
+    if (rightArmRef.current) {
+      rightArmRef.current.rotation.x = -Math.PI / 3;
+    }
+    
+    // Forward lunge
+    setPosition2D([originalX + (isPlayer ? 0.4 : -0.4), position2D[1], position2D[2]]);
     
     setTimeout(() => {
-      if (meshRef.current) {
-        meshRef.current.position.x = originalX;
-        setIsAttacking(false);
+      if (rightArmRef.current) {
+        rightArmRef.current.rotation.x = 0;
       }
-    }, 300);
+      setPosition2D([originalX, position2D[1], position2D[2]]);
+      setIsAttacking(false);
+    }, 400);
   };
 
-  // Keyboard controls for player
+  // Enhanced movement with WASD
   useEffect(() => {
     if (!isPlayer) return;
 
     const handleKeyPress = (event: KeyboardEvent) => {
+      if (isAttacking) return;
+      
+      const moveSpeed = 0.1;
       switch (event.key.toLowerCase()) {
-        case 'j':
-        case 'k':
-          performAttack();
+        case 'w':
+          setPosition2D(prev => [prev[0], prev[1], Math.max(-3, prev[2] - moveSpeed)]);
+          break;
+        case 's':
+          setPosition2D(prev => [prev[0], prev[1], Math.min(3, prev[2] + moveSpeed)]);
+          break;
+        case 'a':
+          setPosition2D(prev => [Math.max(-4, prev[0] - moveSpeed), prev[1], prev[2]]);
+          break;
+        case 'd':
+          setPosition2D(prev => [Math.min(4, prev[0] + moveSpeed), prev[1], prev[2]]);
           break;
       }
     };
 
     window.addEventListener('keydown', handleKeyPress);
     return () => window.removeEventListener('keydown', handleKeyPress);
-  }, [isPlayer]);
+  }, [isPlayer, isAttacking]);
+
+  // Combat controls
+  useEffect(() => {
+    if (!isPlayer) return;
+
+    const handleCombatKeys = (event: KeyboardEvent) => {
+      switch (event.key.toLowerCase()) {
+        case 'j':
+        case 'k':
+          performAttack();
+          break;
+        case ' ':
+          // Jump animation
+          if (meshRef.current && !isAttacking) {
+            const originalY = position2D[1];
+            setPosition2D(prev => [prev[0], prev[1] + 0.5, prev[2]]);
+            setTimeout(() => {
+              setPosition2D(prev => [prev[0], originalY, prev[2]]);
+            }, 300);
+          }
+          break;
+      }
+    };
+
+    window.addEventListener('keydown', handleCombatKeys);
+    return () => window.removeEventListener('keydown', handleCombatKeys);
+  }, [isPlayer, isAttacking, position2D]);
 
   return (
-    <group position={position}>
-      {/* Main body */}
-      <Box ref={meshRef} args={[0.4, 1.2, 0.3]}>
+    <group ref={meshRef} position={position2D}>
+      {/* Realistic body with better proportions */}
+      <Box args={[0.5, 1.4, 0.35]}>
         <meshPhongMaterial color={color} />
       </Box>
       
-      {/* Head */}
-      <Sphere args={[0.15]} position={[0, 0.8, 0]}>
-        <meshPhongMaterial color={color} />
+      {/* Head with helmet effect */}
+      <Sphere args={[0.18]} position={[0, 0.9, 0]}>
+        <meshPhongMaterial color={color} emissive={color} emissiveIntensity={0.1} />
       </Sphere>
       
-      {/* Arms */}
-      <Box args={[0.15, 0.6, 0.15]} position={[-0.3, 0.2, 0]}>
+      {/* Animated Arms */}
+      <Box ref={leftArmRef} args={[0.18, 0.7, 0.18]} position={[-0.35, 0.3, 0]}>
         <meshPhongMaterial color={color} />
       </Box>
-      <Box args={[0.15, 0.6, 0.15]} position={[0.3, 0.2, 0]}>
-        <meshPhongMaterial color={color} />
-      </Box>
-      
-      {/* Legs */}
-      <Box args={[0.15, 0.8, 0.15]} position={[-0.15, -1, 0]}>
-        <meshPhongMaterial color={color} />
-      </Box>
-      <Box args={[0.15, 0.8, 0.15]} position={[0.15, -1, 0]}>
+      <Box ref={rightArmRef} args={[0.18, 0.7, 0.18]} position={[0.35, 0.3, 0]}>
         <meshPhongMaterial color={color} />
       </Box>
       
-      {/* Energy effects for cyberpunk look */}
-      <Sphere args={[0.05]} position={[0, 0.8, 0.2]}>
-        <meshBasicMaterial color="#00D4FF" />
+      {/* Legs with better stance */}
+      <Box args={[0.18, 0.9, 0.18]} position={[-0.18, -1.1, 0]}>
+        <meshPhongMaterial color={color} />
+      </Box>
+      <Box args={[0.18, 0.9, 0.18]} position={[0.18, -1.1, 0]}>
+        <meshPhongMaterial color={color} />
+      </Box>
+      
+      {/* Professional gaming effects */}
+      <Sphere args={[0.08]} position={[0, 0.9, 0.25]}>
+        <meshBasicMaterial color="#4ECDC4" />
       </Sphere>
-      <Sphere args={[0.05]} position={[0, 0.8, -0.2]}>
-        <meshBasicMaterial color="#39FF14" />
+      <Sphere args={[0.08]} position={[0, 0.9, -0.25]}>
+        <meshBasicMaterial color="#A855F7" />
       </Sphere>
+      
+      {/* Chest panel */}
+      <Box args={[0.3, 0.4, 0.05]} position={[0, 0.2, 0.18]}>
+        <meshPhongMaterial color="#4ECDC4" emissive="#4ECDC4" emissiveIntensity={0.3} />
+      </Box>
     </group>
   );
 };
 
-// Badminton Player Component
-const BadmintonPlayer = ({ position, color }: { position: [number, number, number], color: string }) => {
-  const meshRef = useRef<THREE.Mesh>(null);
+// Badminton Player Component - Realistic with animations
+const BadmintonPlayer = ({ position, color, isPlayer = false }: { position: [number, number, number], color: string, isPlayer?: boolean }) => {
+  const groupRef = useRef<THREE.Group>(null);
+  const racketRef = useRef<THREE.Group>(null);
+  const bodyRef = useRef<THREE.Mesh>(null);
+  const [playerPos, setPlayerPos] = useState(position);
+  const [isSwinging, setIsSwinging] = useState(false);
 
   useFrame((state) => {
-    if (meshRef.current) {
-      // Slight movement animation
-      meshRef.current.position.y = position[1] + Math.sin(state.clock.elapsedTime * 1.5) * 0.03;
+    if (bodyRef.current && !isSwinging) {
+      // Natural movement and breathing
+      bodyRef.current.position.y = playerPos[1] + Math.sin(state.clock.elapsedTime * 1.2) * 0.04;
+      
+      // Racket ready position movement
+      if (racketRef.current) {
+        racketRef.current.rotation.z = Math.sin(state.clock.elapsedTime * 0.5) * 0.1;
+      }
     }
   });
 
+  // Player movement for badminton
+  useEffect(() => {
+    if (!isPlayer) return;
+
+    const handleMovement = (event: KeyboardEvent) => {
+      if (isSwinging) return;
+      
+      const moveSpeed = 0.15;
+      switch (event.key.toLowerCase()) {
+        case 'w':
+          setPlayerPos(prev => [prev[0], prev[1], Math.max(-4, prev[2] - moveSpeed)]);
+          break;
+        case 's':
+          setPlayerPos(prev => [prev[0], prev[1], Math.min(4, prev[2] + moveSpeed)]);
+          break;
+        case 'a':
+          setPlayerPos(prev => [Math.max(-6, prev[0] - moveSpeed), prev[1], prev[2]]);
+          break;
+        case 'd':
+          setPlayerPos(prev => [Math.min(6, prev[0] + moveSpeed), prev[1], prev[2]]);
+          break;
+        case ' ':
+          // Swing animation
+          performSwing();
+          break;
+      }
+    };
+
+    window.addEventListener('keydown', handleMovement);
+    return () => window.removeEventListener('keydown', handleMovement);
+  }, [isPlayer, isSwinging]);
+
+  const performSwing = () => {
+    if (isSwinging || !racketRef.current) return;
+    
+    setIsSwinging(true);
+    racketRef.current.rotation.z = -Math.PI / 2;
+    
+    setTimeout(() => {
+      if (racketRef.current) {
+        racketRef.current.rotation.z = 0;
+        setIsSwinging(false);
+      }
+    }, 300);
+  };
+
   return (
-    <group position={position}>
-      {/* Player body */}
-      <Box ref={meshRef} args={[0.3, 1, 0.2]}>
+    <group ref={groupRef} position={playerPos}>
+      {/* Athletic body */}
+      <Box ref={bodyRef} args={[0.35, 1.1, 0.25]}>
         <meshPhongMaterial color={color} />
       </Box>
       
       {/* Head */}
-      <Sphere args={[0.12]} position={[0, 0.7, 0]}>
-        <meshPhongMaterial color={color} />
+      <Sphere args={[0.14]} position={[0, 0.75, 0]}>
+        <meshPhongMaterial color={color} emissive={color} emissiveIntensity={0.05} />
       </Sphere>
       
-      {/* Racket */}
-      <Box args={[0.02, 0.6, 0.02]} position={[0.2, 0.3, 0]} rotation={[0, 0, Math.PI / 4]}>
-        <meshPhongMaterial color="#8B4513" />
+      {/* Arms */}
+      <Box args={[0.16, 0.65, 0.16]} position={[-0.28, 0.25, 0]}>
+        <meshPhongMaterial color={color} />
       </Box>
-      <Sphere args={[0.15]} position={[0.35, 0.6, 0]}>
-        <meshBasicMaterial color="#FFFFFF" wireframe />
+      <Box args={[0.16, 0.65, 0.16]} position={[0.28, 0.25, 0]}>
+        <meshPhongMaterial color={color} />
+      </Box>
+      
+      {/* Legs */}
+      <Box args={[0.16, 0.85, 0.16]} position={[-0.16, -0.95, 0]}>
+        <meshPhongMaterial color={color} />
+      </Box>
+      <Box args={[0.16, 0.85, 0.16]} position={[0.16, -0.95, 0]}>
+        <meshPhongMaterial color={color} />
+      </Box>
+      
+      {/* Professional Racket */}
+      <group ref={racketRef} position={[0.25, 0.4, 0]} rotation={[0, 0, Math.PI / 6]}>
+        {/* Handle */}
+        <Box args={[0.03, 0.7, 0.03]}>
+          <meshPhongMaterial color="#2D1B69" />
+        </Box>
+        {/* Racket head - realistic oval */}
+        <mesh position={[0, 0.5, 0]}>
+          <ringGeometry args={[0.08, 0.18, 16]} />
+          <meshBasicMaterial color="#FFFFFF" side={THREE.DoubleSide} />
+        </mesh>
+        {/* Strings */}
+        <mesh position={[0, 0.5, 0.01]}>
+          <ringGeometry args={[0.09, 0.17, 16]} />
+          <meshBasicMaterial color="#F0F0F0" wireframe />
+        </mesh>
+      </group>
+      
+      {/* Professional effects */}
+      <Sphere args={[0.06]} position={[0, 0.75, 0.2]}>
+        <meshBasicMaterial color="#4ECDC4" />
       </Sphere>
     </group>
   );
@@ -191,11 +338,40 @@ const ArenaEnvironment = ({ gameType }: { gameType: 'fighting' | 'badminton' | '
         </>
       )}
       
-      {/* Badminton net */}
+      {/* Professional Badminton Court */}
       {gameType === 'badminton' && (
-        <Box args={[0.05, 2, 8]} position={[0, 0, 0]}>
-          <meshBasicMaterial color="#FFFFFF" wireframe />
-        </Box>
+        <>
+          {/* Net */}
+          <Box args={[0.08, 2.2, 8]} position={[0, 0.1, 0]}>
+            <meshBasicMaterial color="#FFFFFF" />
+          </Box>
+          <mesh position={[0, 1.1, 0]} rotation={[0, 0, 0]}>
+            <planeGeometry args={[8, 2]} />
+            <meshBasicMaterial color="#FFFFFF" wireframe transparent opacity={0.8} />
+          </mesh>
+          
+          {/* Court lines */}
+          <Plane args={[12, 0.1]} rotation={[-Math.PI / 2, 0, 0]} position={[0, -1.85, 3]}>
+            <meshBasicMaterial color="#FFFFFF" />
+          </Plane>
+          <Plane args={[12, 0.1]} rotation={[-Math.PI / 2, 0, 0]} position={[0, -1.85, -3]}>
+            <meshBasicMaterial color="#FFFFFF" />
+          </Plane>
+          <Plane args={[0.1, 6]} rotation={[-Math.PI / 2, 0, 0]} position={[6, -1.85, 0]}>
+            <meshBasicMaterial color="#FFFFFF" />
+          </Plane>
+          <Plane args={[0.1, 6]} rotation={[-Math.PI / 2, 0, 0]} position={[-6, -1.85, 0]}>
+            <meshBasicMaterial color="#FFFFFF" />
+          </Plane>
+          
+          {/* Service lines */}
+          <Plane args={[6, 0.05]} rotation={[-Math.PI / 2, 0, 0]} position={[0, -1.84, 1.5]}>
+            <meshBasicMaterial color="#FFFFFF" />
+          </Plane>
+          <Plane args={[6, 0.05]} rotation={[-Math.PI / 2, 0, 0]} position={[0, -1.84, -1.5]}>
+            <meshBasicMaterial color="#FFFFFF" />
+          </Plane>
+        </>
       )}
       
       {/* Racing track */}
@@ -214,23 +390,37 @@ const ArenaEnvironment = ({ gameType }: { gameType: 'fighting' | 'badminton' | '
         </>
       )}
       
-      {/* Lighting */}
-      <ambientLight intensity={0.3} />
-      <directionalLight position={[10, 10, 5]} intensity={1} color="#00D4FF" />
-      <directionalLight position={[-10, 10, -5]} intensity={0.8} color="#39FF14" />
-      <pointLight position={[0, 5, 0]} intensity={0.5} color="#FFFFFF" />
+      {/* Professional Gaming Lighting */}
+      <ambientLight intensity={0.4} />
+      <directionalLight position={[12, 8, 6]} intensity={1.2} color="#4ECDC4" castShadow />
+      <directionalLight position={[-8, 6, -4]} intensity={0.8} color="#A855F7" />
+      <pointLight position={[0, 6, 0]} intensity={0.6} color="#FFFFFF" />
+      <spotLight position={[0, 10, 0]} intensity={0.8} angle={Math.PI / 3} penumbra={0.5} color="#4ECDC4" />
     </>
   );
 };
 
-// Camera Controller (prevents auto-rotation)
-const CameraController = () => {
+// Professional Gaming Camera Controller
+const CameraController = ({ gameType }: { gameType: 'fighting' | 'badminton' | 'racing' }) => {
   const { camera } = useThree();
   
   useEffect(() => {
-    camera.position.set(5, 3, 8);
-    camera.lookAt(0, 0, 0);
-  }, [camera]);
+    // Professional gaming perspective based on game type
+    switch (gameType) {
+      case 'fighting':
+        camera.position.set(6, 2, 6); // Side angle like fighting games
+        camera.lookAt(0, 0, 0);
+        break;
+      case 'badminton':
+        camera.position.set(0, 4, 8); // Behind player view
+        camera.lookAt(0, 0, 0);
+        break;
+      case 'racing':
+        camera.position.set(0, 3, 10); // Racing game perspective
+        camera.lookAt(0, 0, 0);
+        break;
+    }
+  }, [camera, gameType]);
 
   return null;
 };
@@ -250,12 +440,10 @@ const GameArena: React.FC<GameArenaProps> = ({ gameType, onGameChange, showAnaly
       case 'badminton':
         return (
           <>
-            <BadmintonPlayer position={[-3, 0, 0]} color="#00D4FF" />
-            <BadmintonPlayer position={[3, 0, 0]} color="#FF6B35" />
-            {/* Shuttlecock */}
-            <Sphere args={[0.05]} position={[0, 2, 0]}>
-              <meshBasicMaterial color="#FFFFFF" />
-            </Sphere>
+            <BadmintonPlayer position={[-3, 0, 0]} color="#4ECDC4" isPlayer />
+            <BadmintonPlayer position={[3, 0, 0]} color="#A855F7" />
+            {/* Realistic Shuttlecock with physics */}
+            <Shuttlecock />
           </>
         );
       case 'racing':
@@ -275,18 +463,21 @@ const GameArena: React.FC<GameArenaProps> = ({ gameType, onGameChange, showAnaly
       {/* Game Arena */}
       <div className="absolute inset-0">
         <Canvas
-          camera={{ position: [5, 3, 8], fov: 75 }}
+          camera={{ position: [6, 2, 6], fov: 80 }}
           shadows
+          gl={{ antialias: true, alpha: false }}
         >
-          <CameraController />
+          <CameraController gameType={gameType} />
           <OrbitControls 
             enablePan={false}
             enableZoom={true}
-            minDistance={3}
-            maxDistance={15}
-            minPolarAngle={Math.PI / 6}
-            maxPolarAngle={Math.PI / 2.5}
-            autoRotate={false} // CRITICAL: No auto-rotation
+            minDistance={4}
+            maxDistance={20}
+            minPolarAngle={Math.PI / 8}
+            maxPolarAngle={Math.PI / 2.2}
+            autoRotate={false}
+            enableDamping={true}
+            dampingFactor={0.05}
           />
           
           <ArenaEnvironment gameType={gameType} />
@@ -343,23 +534,42 @@ const GameArena: React.FC<GameArenaProps> = ({ gameType, onGameChange, showAnaly
         </div>
 
         {/* Game Controls Info */}
-        {gameType === 'fighting' && (
-          <div className="absolute bottom-4 left-4 hud-element p-4 rounded-lg">
-            <div className="text-sm font-medium text-foreground/80">
-              <div className="text-primary font-bold mb-2">CONTROLS</div>
-              <div>WASD: Move</div>
-              <div>J/K: Attack</div>
-              <div>SPACE: Jump</div>
-              <div>L: Block</div>
-            </div>
+        <div className="absolute bottom-4 left-4 hud-element p-4 rounded-lg">
+          <div className="text-sm font-medium text-foreground/80">
+            <div className="text-primary font-bold mb-2 font-gaming tracking-wider">CONTROLS</div>
+            {gameType === 'fighting' && (
+              <>
+                <div>WASD: Move</div>
+                <div>J/K: Attack</div>
+                <div>SPACE: Jump</div>
+              </>
+            )}
+            {gameType === 'badminton' && (
+              <>
+                <div>WASD: Move</div>
+                <div>SPACE: Swing</div>
+                <div>Hold position for accuracy</div>
+              </>
+            )}
+            {gameType === 'racing' && (
+              <>
+                <div>WASD: Drive</div>
+                <div>SPACE: Brake</div>
+                <div>SHIFT: Boost</div>
+              </>
+            )}
           </div>
-        )}
+        </div>
 
         {/* Game Status */}
         <div className="absolute bottom-4 right-4 hud-element p-4 rounded-lg">
           <div className="text-sm font-medium">
-            <div className="text-primary font-bold">STATUS</div>
-            <div className="text-accent">READY TO FIGHT</div>
+            <div className="text-primary font-bold font-gaming tracking-wider">STATUS</div>
+            <div className="text-gaming-teal font-medium">
+              {gameType === 'fighting' && 'COMBAT READY'}
+              {gameType === 'badminton' && 'COURT ACTIVE'}
+              {gameType === 'racing' && 'ENGINES HOT'}
+            </div>
           </div>
         </div>
       </div>

@@ -16,42 +16,45 @@
     --popover: 220 26% 8%;
     --popover-foreground: 210 40% 98%;
 
-    /* Gaming Primary - Electric Blue */
-    --primary: 195 100% 50%;
-    --primary-foreground: 220 26% 6%;
-    --primary-glow: 195 100% 70%;
+    /* Professional Gaming Primary - Deep Cyan */
+    --primary: 185 85% 45%;
+    --primary-foreground: 220 28% 95%;
+    --primary-glow: 185 85% 65%;
 
-    /* Gaming Secondary - Bright Gaming Gray */
-    --secondary: 220 14% 96%;
-    --secondary-foreground: 220 26% 6%;
+    /* Gaming Secondary - Titanium Silver */
+    --secondary: 210 12% 85%;
+    --secondary-foreground: 220 28% 8%;
 
-    /* Gaming Muted - Subtle Gaming Elements */
-    --muted: 220 26% 12%;
-    --muted-foreground: 220 14% 60%;
+    /* Gaming Muted - Professional Dark */
+    --muted: 220 28% 15%;
+    --muted-foreground: 220 12% 65%;
 
-    /* Gaming Accent - Neon Green */
-    --accent: 120 100% 50%;
-    --accent-foreground: 220 26% 6%;
+    /* Gaming Accent - Electric Purple */
+    --accent: 285 90% 65%;
+    --accent-foreground: 220 28% 8%;
 
-    /* Gaming Danger - Bright Red */
-    --destructive: 0 100% 50%;
+    /* Gaming Warning - Vibrant Orange */
+    --destructive: 15 95% 60%;
     --destructive-foreground: 210 40% 98%;
 
-    --border: 220 26% 12%;
-    --input: 220 26% 12%;
-    --ring: 195 100% 50%;
+    --border: 220 28% 18%;
+    --input: 220 28% 18%;
+    --ring: 185 85% 45%;
 
-    --radius: 0.75rem;
+    --radius: 0.9rem;
 
-    /* Gaming Specific Colors */
-    --gaming-orange: 25 100% 60%;
-    --gaming-purple: 270 100% 60%;
-    --gaming-yellow: 60 100% 50%;
+    /* Professional Gaming Colors */
+    --gaming-orange: 15 95% 60%;
+    --gaming-purple: 285 90% 65%;
+    --gaming-yellow: 48 95% 65%;
+    --gaming-teal: 175 80% 55%;
+    --gaming-magenta: 320 85% 65%;
     
-    /* Gaming Gradients */
-    --gradient-primary: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--primary-glow)));
-    --gradient-gaming: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--accent)));
-    --gradient-arena: linear-gradient(180deg, hsl(var(--background)), hsl(220 26% 4%));
+    /* Professional Gaming Gradients */
+    --gradient-primary: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--gaming-teal)));
+    --gradient-gaming: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--accent)), hsl(var(--gaming-magenta)));
+    --gradient-arena: linear-gradient(180deg, hsl(var(--background)), hsl(220 28% 3%));
+    --gradient-hero: linear-gradient(135deg, hsl(var(--gaming-purple) / 0.8), hsl(var(--primary) / 0.8), hsl(var(--gaming-teal) / 0.8));
     
     /* Gaming Shadows & Effects */
     --shadow-gaming: 0 0 30px hsl(var(--primary) / 0.3);
