@@ -66,9 +66,9 @@ const FighterCharacter = ({ position, color, isPlayer = false }: { position: [nu
         meshRef.current.position.y = position2D[1] + Math.abs(Math.sin(walkCycle * 2)) * 0.05;
       }
 
-      // Always face opponent
+      // Always face opponent properly
       if (meshRef.current) {
-        meshRef.current.rotation.y = facingDirection < 0 ? Math.PI : 0;
+        meshRef.current.rotation.set(0, facingDirection < 0 ? Math.PI : 0, 0);
       }
     }
   });
@@ -352,9 +352,9 @@ const BadmintonPlayer = ({ position, color, isPlayer = false }: { position: [num
         }
       }
 
-      // Face the net
+      // Face the net properly
       if (groupRef.current) {
-        groupRef.current.rotation.y = facingDirection < 0 ? Math.PI : 0;
+        groupRef.current.rotation.set(0, facingDirection < 0 ? Math.PI : 0, 0);
       }
     }
   });
@@ -1035,15 +1035,15 @@ const GameArena: React.FC<GameArenaProps> = ({ gameType, onGameChange, showAnaly
       case 'fighting':
         return (
           <>
-            <FighterCharacter position={[-3, 0, 0]} color="#00D4FF" isPlayer />
-            <FighterCharacter position={[3, 0, 0]} color="#FF6B35" />
+            <FighterCharacter position={[-2.5, 0, 0]} color="#4ECDC4" isPlayer />
+            <FighterCharacter position={[2.5, 0, 0]} color="#FF6B35" />
           </>
         );
       case 'badminton':
         return (
           <>
-            <BadmintonPlayer position={[-4, 0, 0]} color="#4ECDC4" isPlayer />
-            <BadmintonPlayer position={[4, 0, 0]} color="#A855F7" />
+            <BadmintonPlayer position={[-3, 0, 0]} color="#00D4FF" isPlayer />
+            <BadmintonPlayer position={[3, 0, 0]} color="#FF6B35" />
             {/* Realistic Shuttlecock with physics */}
             <Shuttlecock />
           </>
