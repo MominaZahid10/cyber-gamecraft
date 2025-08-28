@@ -1391,10 +1391,10 @@ const GameArena: React.FC<GameArenaProps> = ({ gameType, onGameChange, showAnaly
         return (
           <>
             {/* Players face each other across the net with realistic spacing (left-right) */}
-            <BadmintonPlayer position={[-5, 0, 0]} color="#22D3EE" isPlayer />
-            <BadmintonPlayer position={[5, 0, 0]} color="#F97316" />
+            <BadmintonPlayer position={[-5, 0, 0]} color="#22D3EE" isPlayer paused={paused} />
+            <BadmintonPlayer position={[5, 0, 0]} color="#F97316" paused={paused} />
             {/* Realistic Shuttlecock with physics */}
-            <Shuttlecock />
+            <Shuttlecock paused={paused} />
           </>
         );
       case 'racing':
