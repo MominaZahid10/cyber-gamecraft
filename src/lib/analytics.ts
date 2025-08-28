@@ -1,6 +1,6 @@
 import { BadmintonAction, FightingAction, GameAction, GameType, RacingAction, UnifiedPersonality, AIActionResponse } from './types';
 
-const API_BASE = '/api/vi';
+const API_BASE = '/api/v1';
 
 const BATCH_SIZE = 10;
 let actionBuffer: GameAction[] = [];
