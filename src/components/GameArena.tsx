@@ -87,6 +87,22 @@ const FighterCharacter = ({ position, color, isPlayer = false, initialFacing = 1
     setIsAttacking(true);
     const originalX = position2D[0];
 
+    // Send attack action
+    import('@/lib/analytics').then(({ addAction }) => {
+      const dist = Math.abs(originalX - (-originalX));
+      addAction({
+        game_type: 'fighting',
+        action_type: 'attack',
+        timestamp: Date.now(),
+        success: true,
+        move_type: 'attack',
+        position: [position2D[0], position2D[2] || 0],
+        damage_dealt: attackType === 'kick' ? 15 : 8,
+        combo_count: 1,
+        context: { player_health: 100, ai_health: 100, distance_to_opponent: dist },
+      });
+    });
+
     if (attackType === 'punch') {
       // Realistic punch animation with full body movement
       if (rightArmRef.current && bodyRef.current) {
