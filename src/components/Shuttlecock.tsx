@@ -12,6 +12,7 @@ const Shuttlecock = ({ paused = false }: { paused?: boolean }) => {
   const [lastHitTime, setLastHitTime] = useState(0);
 
   useFrame((state, delta) => {
+    if (paused) return;
     if (shuttleRef.current && isInPlay) {
       // Enhanced physics simulation
       const [x, y, z] = position;
