@@ -1376,12 +1376,7 @@ const CameraController = ({ gameType }: { gameType: 'fighting' | 'badminton' | '
 
 const GameArena: React.FC<GameArenaProps> = ({ gameType, onGameChange, showAnalytics, onToggleAnalytics }) => {
   const [gameStarted, setGameStarted] = useState(false);
-
-  useEffect(() => {
-    const onAnyKey = () => setGameStarted(true);
-    window.addEventListener('keydown', onAnyKey);
-    return () => window.removeEventListener('keydown', onAnyKey);
-  }, []);
+  const [paused, setPaused] = useState(false);
 
   const renderGameContent = () => {
     switch (gameType) {
