@@ -771,6 +771,7 @@ const RacingCar = ({ position, color, isPlayer = false, paused = false }: { posi
   const [isBraking, setIsBraking] = useState(false);
 
   useFrame((state, delta) => {
+    if (paused || !carRef.current) return;
     if (carRef.current) {
       // Realistic car physics
       let newVelocity = velocity;
