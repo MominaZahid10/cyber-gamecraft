@@ -757,15 +757,15 @@ const ArenaEnvironment = ({ gameType }: { gameType: 'fighting' | 'badminton' | '
         />
       </Plane>
 
-      {/* Fighting arena octagon ring */}
+      {/* Fighting arena octagon ring - larger and more prominent */}
       {gameType === 'fighting' && (
         <>
           <mesh position={[0, -1.98, 0]} rotation={[-Math.PI / 2, 0, 0]}>
-            <ringGeometry args={[3, 3.2, 8]} />
+            <ringGeometry args={[5, 5.4, 8]} />
             <meshBasicMaterial color="#FFD700" />
           </mesh>
           <mesh position={[0, -1.97, 0]} rotation={[-Math.PI / 2, 0, 0]}>
-            <circleGeometry args={[3, 8]} />
+            <circleGeometry args={[5, 8]} />
             <meshPhongMaterial color="#2A2A4A" />
           </mesh>
         </>
