@@ -294,65 +294,116 @@ const FighterCharacter = ({ position, color, isPlayer = false, initialFacing = 1
 
   return (
     <group ref={meshRef} position={position2D}>
-      {/* Realistic body with better proportions */}
-      <Box ref={bodyRef} args={[0.45, 1.2, 0.3]} position={[0, 0.1, 0]}>
-        <meshPhongMaterial color={color} />
+      {/* Body */}
+      <Box ref={bodyRef} args={[0.4, 1.1, 0.28]} position={[0, 0.1, 0]}>
+        <meshPhongMaterial color={color} shininess={80} />
       </Box>
 
-      {/* Head with helmet effect */}
+      {/* Head */}
       <Sphere args={[0.16]} position={[0, 0.8, 0]}>
-        <meshPhongMaterial color={color} />
+        <meshPhongMaterial color="#f2dcc5" />
+      </Sphere>
+      {/* Eyes */}
+      <Sphere args={[0.02]} position={[-0.04, 0.82, 0.14]}>
+        <meshBasicMaterial color="#111" />
+      </Sphere>
+      <Sphere args={[0.02]} position={[0.04, 0.82, 0.14]}>
+        <meshBasicMaterial color="#111" />
       </Sphere>
 
-      {/* Enhanced Animated Arms with shoulders */}
+      {/* Shoulders */}
       <Sphere args={[0.12]} position={[-0.32, 0.5, 0]}>
         <meshPhongMaterial color={color} />
       </Sphere>
-      <Box ref={leftArmRef} args={[0.16, 0.6, 0.16]} position={[-0.35, 0.1, 0]}>
-        <meshPhongMaterial color={color} />
-      </Box>
+      <group ref={leftArmRef} position={[-0.35, 0.1, 0]}>
+        {/* Upper arm */}
+        <mesh position={[0, 0.25, 0]}>
+          <cylinderGeometry args={[0.07, 0.07, 0.5, 12]} />
+          <meshPhongMaterial color={color} />
+        </mesh>
+        {/* Elbow */}
+        <Sphere args={[0.07]} position={[0, -0.02, 0]}>
+          <meshPhongMaterial color="#f2dcc5" />
+        </Sphere>
+        {/* Forearm */}
+        <mesh position={[0, -0.35, 0]}>
+          <cylinderGeometry args={[0.06, 0.06, 0.5, 12]} />
+          <meshPhongMaterial color={color} />
+        </mesh>
+        {/* Hand */}
+        <Box args={[0.12, 0.08, 0.14]} position={[0, -0.62, 0]}>
+          <meshPhongMaterial color="#f2dcc5" />
+        </Box>
+      </group>
 
       <Sphere args={[0.12]} position={[0.32, 0.5, 0]}>
         <meshPhongMaterial color={color} />
       </Sphere>
-      <Box ref={rightArmRef} args={[0.16, 0.6, 0.16]} position={[0.35, 0.1, 0]}>
-        <meshPhongMaterial color={color} />
-      </Box>
+      <group ref={rightArmRef} position={[0.35, 0.1, 0]}>
+        <mesh position={[0, 0.25, 0]}>
+          <cylinderGeometry args={[0.07, 0.07, 0.5, 12]} />
+          <meshPhongMaterial color={color} />
+        </mesh>
+        <Sphere args={[0.07]} position={[0, -0.02, 0]}>
+          <meshPhongMaterial color="#f2dcc5" />
+        </Sphere>
+        <mesh position={[0, -0.35, 0]}>
+          <cylinderGeometry args={[0.06, 0.06, 0.5, 12]} />
+          <meshPhongMaterial color={color} />
+        </mesh>
+        <Box args={[0.12, 0.08, 0.14]} position={[0, -0.62, 0]}>
+          <meshPhongMaterial color="#f2dcc5" />
+        </Box>
+      </group>
 
-      {/* Enhanced Legs with hips */}
+      {/* Hips */}
       <Sphere args={[0.10]} position={[-0.15, -0.6, 0]}>
         <meshPhongMaterial color={color} />
       </Sphere>
-      <Box ref={leftLegRef} args={[0.16, 0.8, 0.16]} position={[-0.15, -1.0, 0]}>
-        <meshPhongMaterial color={color} />
-      </Box>
+      <group ref={leftLegRef} position={[-0.15, -1.0, 0]}>
+        {/* Upper leg */}
+        <mesh position={[0, 0.28, 0]}>
+          <cylinderGeometry args={[0.08, 0.08, 0.6, 12]} />
+          <meshPhongMaterial color={color} />
+        </mesh>
+        {/* Knee */}
+        <Sphere args={[0.08]} position={[0, -0.05, 0]}>
+          <meshPhongMaterial color="#f2dcc5" />
+        </Sphere>
+        {/* Lower leg */}
+        <mesh position={[0, -0.42, 0]}>
+          <cylinderGeometry args={[0.07, 0.07, 0.55, 12]} />
+          <meshPhongMaterial color={color} />
+        </mesh>
+        {/* Shoe */}
+        <Box args={[0.2, 0.1, 0.3]} position={[0, -0.75, 0.05]}>
+          <meshPhongMaterial color="#e5e7eb" />
+        </Box>
+      </group>
 
       <Sphere args={[0.10]} position={[0.15, -0.6, 0]}>
         <meshPhongMaterial color={color} />
       </Sphere>
-      <Box ref={rightLegRef} args={[0.16, 0.8, 0.16]} position={[0.15, -1.0, 0]}>
-        <meshPhongMaterial color={color} />
-      </Box>
+      <group ref={rightLegRef} position={[0.15, -1.0, 0]}>
+        <mesh position={[0, 0.28, 0]}>
+          <cylinderGeometry args={[0.08, 0.08, 0.6, 12]} />
+          <meshPhongMaterial color={color} />
+        </mesh>
+        <Sphere args={[0.08]} position={[0, -0.05, 0]}>
+          <meshPhongMaterial color="#f2dcc5" />
+        </Sphere>
+        <mesh position={[0, -0.42, 0]}>
+          <cylinderGeometry args={[0.07, 0.07, 0.55, 12]} />
+          <meshPhongMaterial color={color} />
+        </mesh>
+        <Box args={[0.2, 0.1, 0.3]} position={[0, -0.75, 0.05]}>
+          <meshPhongMaterial color="#e5e7eb" />
+        </Box>
+      </group>
 
-      {/* Feet */}
-      <Box args={[0.2, 0.1, 0.3]} position={[-0.15, -1.45, 0.05]}>
-        <meshPhongMaterial color={color} />
-      </Box>
-      <Box args={[0.2, 0.1, 0.3]} position={[0.15, -1.45, 0.05]}>
-        <meshPhongMaterial color={color} />
-      </Box>
-      
-      {/* Professional gaming effects */}
-      <Sphere args={[0.08]} position={[0, 0.9, 0.25]}>
-        <meshBasicMaterial color="#4ECDC4" />
-      </Sphere>
-      <Sphere args={[0.08]} position={[0, 0.9, -0.25]}>
-        <meshBasicMaterial color="#A855F7" />
-      </Sphere>
-      
-      {/* Chest panel */}
+      {/* Suit accent */}
       <Box args={[0.3, 0.4, 0.05]} position={[0, 0.2, 0.18]}>
-        <meshPhongMaterial color="#4ECDC4" />
+        <meshPhongMaterial color="#3ddbd9" />
       </Box>
     </group>
   );
