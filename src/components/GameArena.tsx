@@ -1174,8 +1174,8 @@ const GameArena: React.FC<GameArenaProps> = ({ gameType, onGameChange, showAnaly
       case 'fighting':
         return (
           <>
-            <FighterCharacter position={[-2.5, 0, 0]} color="#4ECDC4" isPlayer />
-            <FighterCharacter position={[2.5, 0, 0]} color="#FF6B35" />
+            <FighterCharacter position={[-4.5, 0, 0]} color="#4ECDC4" isPlayer initialFacing={1} engaged={gameStarted} />
+            <FighterCharacter position={[4.5, 0, 0]} color="#FF6B35" initialFacing={1} engaged={gameStarted} />
           </>
         );
       case 'badminton':
