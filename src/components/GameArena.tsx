@@ -781,18 +781,18 @@ const RacingCar = ({ position, color, isPlayer = false }: { position: [number, n
 
   return (
     <group ref={carRef} position={carPosition}>
-      {/* Enhanced car body */}
-      <Box args={[1.6, 0.3, 0.7]} position={[0, 0.1, 0]}>
+      {/* Enhanced car body (longer front-to-back for vertical track) */}
+      <Box args={[0.7, 0.3, 1.6]} position={[0, 0.1, 0]}>
         <meshPhongMaterial color={color} shininess={100} />
       </Box>
 
       {/* Car cabin */}
-      <Box args={[1.2, 0.25, 0.6]} position={[0, 0.35, -0.1]}>
+      <Box args={[0.6, 0.25, 1.2]} position={[0, 0.35, -0.1]}>
         <meshPhongMaterial color={color} />
       </Box>
 
       {/* Realistic wheels with rims */}
-      {[[-0.7, -0.15, 0.4], [0.7, -0.15, 0.4], [-0.7, -0.15, -0.4], [0.7, -0.15, -0.4]].map((wheelPos, i) => (
+      {[[-0.35, -0.15, 0.7], [0.35, -0.15, 0.7], [-0.35, -0.15, -0.7], [0.35, -0.15, -0.7]].map((wheelPos, i) => (
         <group key={i} position={wheelPos}>
           {/* Tire */}
           <Sphere ref={(el) => { if (el) wheelRefs.current[i] = el; }} args={[0.15]} scale={[1, 0.7, 1]}>
@@ -806,12 +806,12 @@ const RacingCar = ({ position, color, isPlayer = false }: { position: [number, n
       ))}
 
       {/* Windshield */}
-      <Box args={[1.1, 0.2, 0.02]} position={[0, 0.3, 0.28]}>
+      <Box args={[0.6, 0.2, 0.02]} position={[0, 0.3, 0.75]}>
         <meshPhongMaterial color="#4FC3F7" transparent opacity={0.8} />
       </Box>
 
       {/* Rear windshield */}
-      <Box args={[1.0, 0.15, 0.02]} position={[0, 0.25, -0.28]}>
+      <Box args={[0.6, 0.15, 0.02]} position={[0, 0.25, -0.75]}>
         <meshPhongMaterial color="#4FC3F7" transparent opacity={0.8} />
       </Box>
 
