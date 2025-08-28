@@ -119,7 +119,7 @@ const AnalyticsOverlay: React.FC<AnalyticsOverlayProps> = ({ isOpen, onClose }) 
               </Card>
             </div>
 
-            <Card className="gaming-card mb-8">
+            <Card className="bg-card/80 border border-white/10 shadow-xl mb-8">
               <CardHeader>
                 <CardTitle className="text-foreground">Real-Time AI Insights</CardTitle>
               </CardHeader>
