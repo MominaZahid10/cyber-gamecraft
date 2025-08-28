@@ -761,7 +761,7 @@ const BadmintonPlayer = ({ position, color, isPlayer = false, paused = false }: 
 };
 
 // Enhanced Racing Car Component
-const RacingCar = ({ position, color, isPlayer = false }: { position: [number, number, number], color: string, isPlayer?: boolean }) => {
+const RacingCar = ({ position, color, isPlayer = false, paused = false }: { position: [number, number, number], color: string, isPlayer?: boolean, paused?: boolean }) => {
   const carRef = useRef<THREE.Group>(null);
   const wheelRefs = useRef<THREE.Mesh[]>([]);
   const [carPosition, setCarPosition] = useState(position);
