@@ -426,6 +426,7 @@ const BadmintonPlayer = ({ position, color, isPlayer = false, paused = false }: 
   const [facingDirection, setFacingDirection] = useState<number>(position[0] > 0 ? -1 : 1);
 
   useFrame((state, delta) => {
+    if (paused) return;
     if (bodyRef.current) {
       if (!isSwinging && !isMoving) {
         // Natural breathing and ready stance
