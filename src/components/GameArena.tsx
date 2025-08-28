@@ -14,7 +14,7 @@ interface GameArenaProps {
 }
 
 // Fighter Character Component - Realistic with animations
-const FighterCharacter = ({ position, color, isPlayer = false }: { position: [number, number, number], color: string, isPlayer?: boolean }) => {
+const FighterCharacter = ({ position, color, isPlayer = false, initialFacing = 1, engaged = false }: { position: [number, number, number], color: string, isPlayer?: boolean, initialFacing?: -1 | 1, engaged?: boolean }) => {
   const meshRef = useRef<THREE.Group>(null);
   const leftArmRef = useRef<THREE.Mesh>(null);
   const rightArmRef = useRef<THREE.Mesh>(null);
