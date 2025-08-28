@@ -788,15 +788,15 @@ const ArenaEnvironment = ({ gameType }: { gameType: 'fighting' | 'badminton' | '
         <>
           {/* Arena cage structure */}
           <mesh position={[0, 1, 0]}>
-            <cylinderGeometry args={[4, 4, 4, 8, 1, true]} />
+            <cylinderGeometry args={[6, 6, 4, 8, 1, true]} />
             <meshBasicMaterial color="#C0C0C0" wireframe transparent opacity={0.6} />
           </mesh>
 
           {/* Arena posts */}
           {Array.from({ length: 8 }, (_, i) => {
             const angle = (i / 8) * Math.PI * 2;
-            const x = Math.cos(angle) * 4;
-            const z = Math.sin(angle) * 4;
+            const x = Math.cos(angle) * 6;
+            const z = Math.sin(angle) * 6;
             return (
               <Box key={i} args={[0.1, 4, 0.1]} position={[x, 1, z]}>
                 <meshPhongMaterial color="#808080" />
