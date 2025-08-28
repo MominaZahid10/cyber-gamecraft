@@ -95,14 +95,6 @@ const AnalyticsOverlay: React.FC<AnalyticsOverlayProps> = ({ isOpen, onClose }) 
               </Card>
               <Card className="bg-card/80 border border-white/10 shadow-xl">
                 <CardHeader className="pb-2">
-                  <CardTitle className="text-foreground">Avg Game Time</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="text-3xl font-bold text-foreground">{analyticsData.avgGameTime}</div>
-                </CardContent>
-              </Card>
-              <Card className="bg-card/80 border border-white/10 shadow-xl">
-                <CardHeader className="pb-2">
                   <CardTitle className="text-foreground">Favorite Game</CardTitle>
                 </CardHeader>
                 <CardContent>
