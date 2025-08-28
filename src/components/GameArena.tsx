@@ -721,18 +721,37 @@ const RacingCar = ({ position, color, isPlayer = false }: { position: [number, n
     if (!isPlayer) return;
 
     const handleKeyDown = (event: KeyboardEvent) => {
+      const send = (type: 'accelerate' | 'brake' | 'steer') => {
+        import('@/lib/analytics').then(({ addAction }) => {
+          addAction({
+            game_type: 'racing',
+            action_type: type,
+            timestamp: Date.now(),
+            success: true,
+            speed: Math.max(0, velocity),
+            position_on_track: [carPosition[0], carPosition[2]],
+            overtaking_attempt: false,
+            crash_occurred: false,
+            context: { lap_number: 1, position_in_race: 1, distance_to_finish: Math.max(0, 100 - Math.abs(carPosition[2]) * 3) },
+          });
+        });
+      };
       switch (event.key.toLowerCase()) {
         case 'w':
           setIsAccelerating(true);
+          send('accelerate');
           break;
         case 's':
           setIsBraking(true);
+          send('brake');
           break;
         case 'a':
           setSteering(prev => Math.max(prev - 0.05, -0.5));
+          send('steer');
           break;
         case 'd':
           setSteering(prev => Math.min(prev + 0.05, 0.5));
+          send('steer');
           break;
       }
     };
