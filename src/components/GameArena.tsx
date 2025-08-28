@@ -482,6 +482,22 @@ const BadmintonPlayer = ({ position, color, isPlayer = false }: { position: [num
 
     setIsSwinging(true);
 
+    // Send badminton shot action (approximate as drive with power)
+    import('@/lib/analytics').then(({ addAction }) => {
+      addAction({
+        game_type: 'badminton',
+        action_type: 'shot',
+        timestamp: Date.now(),
+        success: true,
+        shot_type: 'drive',
+        court_position: [playerPos[0], playerPos[2] || 0],
+        shuttlecock_target: [0, 0],
+        power_level: Math.max(0, Math.min(1, power)),
+        rally_position: 1,
+        context: { rally_count: 1, court_side: playerPos[2] > 0 ? 'right' : 'left', game_score: [0, 0] },
+      });
+    });
+
     // Realistic swing animation with power variation
     const swingIntensity = 0.5 + power * 0.8;
     const swingSpeed = 200 + power * 200;
