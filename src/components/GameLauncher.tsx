@@ -67,12 +67,13 @@ const GameLauncher: React.FC<GameLauncherProps> = ({ onGameSelect }) => {
           transition={{ duration: 0.8 }}
           className="text-center mb-8"
         >
-          <div className="inline-block bg-gradient-hero bg-clip-text text-transparent mb-6">
-            <h1 className="text-7xl font-gaming font-black tracking-wider drop-shadow-2xl">
+          <div className="inline-block bg-gradient-hero bg-clip-text text-transparent mb-3">
+            <h1 className="text-7xl md:text-8xl font-gaming font-black tracking-wider drop-shadow-2xl">
               MULTI GAME ARENA
             </h1>
           </div>
-          <div className="text-xl font-medium text-foreground/90 mb-4">
+          <div className="uppercase tracking-[0.3em] text-sm text-muted-foreground/80 mb-2">Our Destination</div>
+          <div className="text-xl font-medium text-foreground/90">
             One destination, three electrifying challenges. Test your skills in fighting, badminton, and car racing.
           </div>
         </motion.div>
