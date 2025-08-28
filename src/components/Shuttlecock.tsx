@@ -3,7 +3,7 @@ import { useFrame } from '@react-three/fiber';
 import { Sphere, Cone } from '@react-three/drei';
 import * as THREE from 'three';
 
-const Shuttlecock = () => {
+const Shuttlecock = ({ paused = false }: { paused?: boolean }) => {
   const shuttleRef = useRef<THREE.Group>(null);
   const [position, setPosition] = useState<[number, number, number]>([0, 2.5, 0]);
   const [velocity, setVelocity] = useState<[number, number, number]>([0, 0, 0]);
@@ -12,6 +12,7 @@ const Shuttlecock = () => {
   const [lastHitTime, setLastHitTime] = useState(0);
 
   useFrame((state, delta) => {
+    if (paused) return;
     if (shuttleRef.current && isInPlay) {
       // Enhanced physics simulation
       const [x, y, z] = position;
