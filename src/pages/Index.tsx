@@ -45,7 +45,7 @@ const Index = () => {
       {/* Back to Launcher Button */}
       <button
         onClick={handleBackToLauncher}
-        className="fixed top-4 left-1/2 transform -translate-x-1/2 btn-gaming-outline px-4 py-2 text-sm z-40"
+        className="fixed top-4 right-4 btn-gaming-outline px-4 py-2 text-sm z-40"
       >
         ← MAIN MENU
       </button>
