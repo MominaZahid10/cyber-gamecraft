@@ -1244,8 +1244,21 @@ const GameArena: React.FC<GameArenaProps> = ({ gameType, onGameChange, showAnaly
 
       {/* Game UI Overlay */}
       <div className="absolute inset-0 pointer-events-none">
+        {/* Top Score Bar */}
+        <div className="absolute top-4 left-0 right-0 flex justify-center">
+          {gameType === 'fighting' && (
+            <ScoreBar game="fighting" playerHealth={100} aiHealth={100} rounds={[0, 0]} />
+          )}
+          {gameType === 'badminton' && (
+            <ScoreBar game="badminton" score={[0, 0]} />
+          )}
+          {gameType === 'racing' && (
+            <ScoreBar game="racing" lap={1} totalLaps={3} position={1} totalRacers={6} />
+          )}
+        </div>
+
         {/* Top HUD */}
-        <div className="absolute top-4 left-4 right-4 flex justify-between items-start pointer-events-auto">
+        <div className="absolute top-20 left-4 right-4 flex justify-between items-start pointer-events-auto">
           {/* Game Switcher */}
           <div className="flex gap-2">
             {(['fighting', 'badminton', 'racing'] as const).map((game) => (
