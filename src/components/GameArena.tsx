@@ -74,6 +74,13 @@ const FighterCharacter = ({ position, color, isPlayer = false, initialFacing = 1
     }
   });
 
+  // When engagement starts, orient toward each other (player faces right, opponent faces left)
+  useEffect(() => {
+    if (engaged) {
+      setFacingDirection(isPlayer ? 1 : -1);
+    }
+  }, [engaged, isPlayer]);
+
   const performAttack = (attackType: 'punch' | 'kick' = 'punch') => {
     if (!meshRef.current || isAttacking) return;
 
