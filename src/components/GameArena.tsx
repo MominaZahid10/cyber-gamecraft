@@ -28,6 +28,7 @@ const FighterCharacter = ({ position, color, isPlayer = false, initialFacing = 1
   const [facingDirection, setFacingDirection] = useState<number>(initialFacing);
 
   useFrame((state, delta) => {
+    if (paused) return;
     if (meshRef.current) {
       // Realistic idle animation - breathing and slight movement
       if (!isAttacking && !isWalking) {
