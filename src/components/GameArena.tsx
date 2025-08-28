@@ -925,14 +925,20 @@ const ArenaEnvironment = ({ gameType }: { gameType: 'fighting' | 'badminton' | '
           <Box args={[0.3, 0.3, 0.3]} position={[0, 8, 0]}>
             <meshBasicMaterial color="#FFFFFF" />
           </Box>
-          {Array.from({ length: 4 }, (_, i) => {
-            const angle = (i / 4) * Math.PI * 2;
-            const x = Math.cos(angle) * 6;
-            const z = Math.sin(angle) * 6;
+          {Array.from({ length: 8 }, (_, i) => {
+            const angle = (i / 8) * Math.PI * 2;
+            const x = Math.cos(angle) * 7.5;
+            const z = Math.sin(angle) * 7.5;
             return (
-              <Box key={i} args={[0.2, 0.2, 0.2]} position={[x, 6, z]}>
-                <meshBasicMaterial color="#FFD700" />
-              </Box>
+              <group key={i}>
+                <Box args={[0.2, 0.2, 0.2]} position={[x, 6, z]}>
+                  <meshBasicMaterial color="#FFD700" />
+                </Box>
+                <Sphere args={[0.25]} position={[x, 6.3, z]}>
+                  <meshBasicMaterial color="#FFFFAA" transparent opacity={0.9} />
+                </Sphere>
+                <pointLight position={[x, 6.3, z]} intensity={0.8} color="#FFE680" />
+              </group>
             );
           })}
 
