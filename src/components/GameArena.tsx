@@ -151,26 +151,46 @@ const FighterCharacter = ({ position, color, isPlayer = false, initialFacing = 1
       if (isAttacking) return;
 
       const moveSpeed = 0.08;
-      const prevPos = position2D;
+
+      const pushMove = () => {
+        import('@/lib/analytics').then(({ addAction }) => {
+          const x = position2D[0];
+          const dist = Math.abs(x - (-x));
+          addAction({
+            game_type: 'fighting',
+            action_type: 'move',
+            timestamp: Date.now(),
+            success: true,
+            move_type: 'move',
+            position: [position2D[0], position2D[2] || 0],
+            combo_count: 0,
+            context: { player_health: 100, ai_health: 100, distance_to_opponent: dist },
+          });
+        });
+      };
 
       switch (event.key.toLowerCase()) {
         case 'w':
           setPosition2D(prev => [prev[0], prev[1], Math.max(-4, prev[2] - moveSpeed)]);
           setIsWalking(true);
+          pushMove();
           break;
         case 's':
           setPosition2D(prev => [prev[0], prev[1], Math.min(4, prev[2] + moveSpeed)]);
           setIsWalking(true);
+          pushMove();
           break;
         case 'a':
           setPosition2D(prev => [Math.max(-6, prev[0] - moveSpeed), prev[1], prev[2]]);
           setFacingDirection(-1);
           setIsWalking(true);
+          pushMove();
           break;
         case 'd':
           setPosition2D(prev => [Math.min(6, prev[0] + moveSpeed), prev[1], prev[2]]);
           setFacingDirection(1);
           setIsWalking(true);
+          pushMove();
           break;
       }
     };
