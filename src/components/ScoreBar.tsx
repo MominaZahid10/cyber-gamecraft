@@ -40,7 +40,7 @@ const ScoreBar: React.FC<ScoreProps> = (props) => {
     const { playerHealth, aiHealth, rounds } = props;
     return (
       <div className={`${base} bg-gradient-to-b from-[#1b1b28] to-[#10101a] text-white flex items-center gap-4`}> 
-        <div className="font-gaming tracking-widest text-sm opacity-80">ARENA</div>
+        <div className="font-gaming tracking-widest text-sm opacity-90">Player vs AI</div>
         <Bar value={playerHealth} color="#2dd4bf" />
         <div className="px-2 text-lg font-bold">{rounds[0]} : {rounds[1]}</div>
         <Bar value={aiHealth} color="#ef4444" />
@@ -51,7 +51,7 @@ const ScoreBar: React.FC<ScoreProps> = (props) => {
     const { score } = props;
     return (
       <div className={`${base} bg-gradient-to-b from-[#122216] to-[#0d1710] text-white flex items-center gap-4`}> 
-        <div className="font-gaming tracking-widest text-sm opacity-80">COURT</div>
+        <div className="font-gaming tracking-widest text-sm opacity-90">Player vs AI</div>
         <div className="text-xl font-extrabold">{score[0]} - {score[1]}</div>
         <div className="text-xs opacity-70">GAME SCORE</div>
       </div>
@@ -60,7 +60,7 @@ const ScoreBar: React.FC<ScoreProps> = (props) => {
   const { lap, totalLaps, position, totalRacers } = props;
   return (
     <div className={`${base} bg-gradient-to-b from-[#1a1a1a] to-[#0f0f10] text-white flex items-center gap-4`}> 
-      <div className="font-gaming tracking-widest text-sm opacity-80">RACE</div>
+      <div className="font-gaming tracking-widest text-sm opacity-90">Player vs AI</div>
       <div className="text-sm">Lap</div>
       <div className="text-xl font-extrabold">{lap}/{totalLaps}</div>
       <div className="h-5 w-px bg-white/20" />
