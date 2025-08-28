@@ -6,20 +6,20 @@
 
 @layer base {
   :root {
-    /* Gaming Background & Surfaces */
-    --background: 220 26% 6%;
+    /* Enhanced Gaming Background & Surfaces */
+    --background: 220 28% 5%;
     --foreground: 210 40% 98%;
 
-    --card: 220 26% 8%;
+    --card: 220 28% 8%;
     --card-foreground: 210 40% 98%;
 
-    --popover: 220 26% 8%;
+    --popover: 220 28% 8%;
     --popover-foreground: 210 40% 98%;
 
-    /* Professional Gaming Primary - Deep Cyan */
-    --primary: 185 85% 45%;
-    --primary-foreground: 220 28% 95%;
-    --primary-glow: 185 85% 65%;
+    /* Enhanced Professional Gaming Primary - Vibrant Cyan */
+    --primary: 185 90% 50%;
+    --primary-foreground: 220 30% 95%;
+    --primary-glow: 185 90% 70%;
 
     /* Gaming Secondary - Titanium Silver */
     --secondary: 210 12% 85%;
@@ -43,23 +43,23 @@
 
     --radius: 0.9rem;
 
-    /* Professional Gaming Colors */
-    --gaming-orange: 15 95% 60%;
-    --gaming-purple: 285 90% 65%;
-    --gaming-yellow: 48 95% 65%;
-    --gaming-teal: 175 80% 55%;
-    --gaming-magenta: 320 85% 65%;
+    /* Enhanced Professional Gaming Colors */
+    --gaming-orange: 15 98% 65%;
+    --gaming-purple: 285 95% 70%;
+    --gaming-yellow: 48 98% 70%;
+    --gaming-teal: 175 85% 60%;
+    --gaming-magenta: 320 90% 70%;
     
-    /* Professional Gaming Gradients */
-    --gradient-primary: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--gaming-teal)));
-    --gradient-gaming: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--accent)), hsl(var(--gaming-magenta)));
-    --gradient-arena: linear-gradient(180deg, hsl(var(--background)), hsl(220 28% 3%));
-    --gradient-hero: linear-gradient(135deg, hsl(var(--gaming-purple) / 0.8), hsl(var(--primary) / 0.8), hsl(var(--gaming-teal) / 0.8));
+    /* Enhanced Professional Gaming Gradients */
+    --gradient-primary: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--gaming-teal)), hsl(var(--gaming-purple) / 0.8));
+    --gradient-gaming: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--accent)), hsl(var(--gaming-magenta)), hsl(var(--gaming-orange) / 0.8));
+    --gradient-arena: linear-gradient(180deg, hsl(var(--background)), hsl(220 30% 2%));
+    --gradient-hero: linear-gradient(135deg, hsl(var(--gaming-purple) / 0.9), hsl(var(--primary) / 0.9), hsl(var(--gaming-teal) / 0.9), hsl(var(--gaming-orange) / 0.7));
     
-    /* Gaming Shadows & Effects */
-    --shadow-gaming: 0 0 30px hsl(var(--primary) / 0.3);
-    --shadow-accent: 0 0 20px hsl(var(--accent) / 0.4);
-    --shadow-intense: 0 10px 50px -10px hsl(var(--primary) / 0.5);
+    /* Enhanced Gaming Shadows & Effects */
+    --shadow-gaming: 0 0 40px hsl(var(--primary) / 0.4), 0 0 60px hsl(var(--gaming-teal) / 0.2);
+    --shadow-accent: 0 0 25px hsl(var(--accent) / 0.5), 0 0 40px hsl(var(--gaming-purple) / 0.3);
+    --shadow-intense: 0 15px 60px -15px hsl(var(--primary) / 0.6), 0 0 80px hsl(var(--gaming-magenta) / 0.3);
     
     /* Gaming Animations */
     --transition-gaming: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -136,19 +136,32 @@
 }
 
 @layer components {
-  /* Gaming Button Variants */
+  /* Enhanced Gaming Button Variants */
   .btn-gaming {
-    @apply bg-primary text-primary-foreground hover:bg-primary/90 
+    @apply bg-primary text-primary-foreground hover:bg-primary/90
            transition-all duration-300 font-bold uppercase tracking-wider
-           shadow-lg hover:shadow-xl active:scale-95 
-           border border-primary/20 backdrop-blur-sm;
+           shadow-lg hover:shadow-xl active:scale-95
+           border border-primary/30 backdrop-blur-sm;
+    box-shadow: var(--shadow-gaming);
+    background: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--gaming-teal) / 0.8));
+  }
+
+  .btn-gaming:hover {
+    box-shadow: var(--shadow-intense);
+    background: linear-gradient(135deg, hsl(var(--primary) / 1.1), hsl(var(--gaming-teal)));
   }
   
   .btn-gaming-outline {
-    @apply bg-transparent text-primary border-2 border-primary 
+    @apply bg-transparent text-primary border-2 border-primary
            hover:bg-primary hover:text-primary-foreground
            transition-all duration-300 font-bold uppercase tracking-wider
            shadow-lg hover:shadow-xl active:scale-95 backdrop-blur-sm;
+    box-shadow: 0 0 20px hsl(var(--primary) / 0.2);
+  }
+
+  .btn-gaming-outline:hover {
+    box-shadow: var(--shadow-gaming);
+    background: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--gaming-teal) / 0.8));
   }
   
   .btn-accent {
@@ -158,10 +171,17 @@
            border border-accent/20 backdrop-blur-sm;
   }
   
-  /* HUD Elements */
+  /* Enhanced HUD Elements */
   .hud-element {
-    @apply bg-card/80 backdrop-blur-md border border-primary/20 
+    @apply bg-card/85 backdrop-blur-lg border border-primary/30
            rounded-lg shadow-lg text-foreground;
+    box-shadow: 0 8px 32px hsl(var(--primary) / 0.15),
+                0 0 20px hsl(var(--gaming-teal) / 0.1),
+                inset 0 1px 0 hsl(var(--primary) / 0.2);
+    background: linear-gradient(135deg,
+                hsl(var(--card) / 0.9),
+                hsl(var(--card)) 50%,
+                hsl(var(--primary) / 0.05));
   }
   
   /* Arena Environment */
@@ -210,10 +230,12 @@
   
   @keyframes glow {
     from {
-      box-shadow: 0 0 20px hsl(var(--primary) / 0.3);
+      box-shadow: 0 0 25px hsl(var(--primary) / 0.4);
     }
     to {
-      box-shadow: 0 0 30px hsl(var(--primary) / 0.6), 0 0 40px hsl(var(--accent) / 0.3);
+      box-shadow: 0 0 40px hsl(var(--primary) / 0.7),
+                  0 0 50px hsl(var(--accent) / 0.4),
+                  0 0 60px hsl(var(--gaming-teal) / 0.3);
     }
   }
   
