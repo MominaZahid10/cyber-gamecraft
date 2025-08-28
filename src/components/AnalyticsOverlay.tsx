@@ -77,33 +77,33 @@ const AnalyticsOverlay: React.FC<AnalyticsOverlayProps> = ({ isOpen, onClose }) 
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-              <Card className="gaming-card">
+              <Card className="bg-card/80 border border-white/10 shadow-xl">
                 <CardHeader className="pb-2">
-                  <CardTitle className="text-primary">Total Games</CardTitle>
+                  <CardTitle className="text-foreground">Total Games</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <div className="text-3xl font-bold text-foreground">{analyticsData.totalGames}</div>
                 </CardContent>
               </Card>
-              <Card className="gaming-card">
+              <Card className="bg-card/80 border border-white/10 shadow-xl">
                 <CardHeader className="pb-2">
-                  <CardTitle className="text-accent">Win Rate</CardTitle>
+                  <CardTitle className="text-foreground">Win Rate</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <div className="text-3xl font-bold text-foreground">{analyticsData.winRate}%</div>
                 </CardContent>
               </Card>
-              <Card className="gaming-card">
+              <Card className="bg-card/80 border border-white/10 shadow-xl">
                 <CardHeader className="pb-2">
-                  <CardTitle className="text-gaming-orange">Avg Game Time</CardTitle>
+                  <CardTitle className="text-foreground">Avg Game Time</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <div className="text-3xl font-bold text-foreground">{analyticsData.avgGameTime}</div>
                 </CardContent>
               </Card>
-              <Card className="gaming-card">
+              <Card className="bg-card/80 border border-white/10 shadow-xl">
                 <CardHeader className="pb-2">
-                  <CardTitle className="text-gaming-purple">Favorite Game</CardTitle>
+                  <CardTitle className="text-foreground">Favorite Game</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <div className="text-2xl font-bold text-foreground">{analyticsData.favoriteGame}</div>
@@ -112,9 +112,9 @@ const AnalyticsOverlay: React.FC<AnalyticsOverlayProps> = ({ isOpen, onClose }) 
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
-              <Card className="gaming-card">
+              <Card className="bg-card/80 border border-white/10 shadow-xl">
                 <CardHeader>
-                  <CardTitle className="text-primary">Unified Personality</CardTitle>
+                  <CardTitle className="text-foreground">Unified Personality</CardTitle>
                 </CardHeader>
                 <CardContent>
                   {personality ? (
@@ -125,9 +125,9 @@ const AnalyticsOverlay: React.FC<AnalyticsOverlayProps> = ({ isOpen, onClose }) 
                 </CardContent>
               </Card>
 
-              <Card className="gaming-card">
+              <Card className="bg-card/80 border border-white/10 shadow-xl">
                 <CardHeader>
-                  <CardTitle className="text-accent">Cross-Game Performance</CardTitle>
+                  <CardTitle className="text-foreground">Cross-Game Performance</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <CrossGamePerformanceChart metrics={metrics} />
@@ -137,7 +137,7 @@ const AnalyticsOverlay: React.FC<AnalyticsOverlayProps> = ({ isOpen, onClose }) 
 
             <Card className="gaming-card mb-8">
               <CardHeader>
-                <CardTitle className="text-primary">Real-Time AI Insights</CardTitle>
+                <CardTitle className="text-foreground">Real-Time AI Insights</CardTitle>
               </CardHeader>
               <CardContent>
                 <AIInsightsPanel lastAI={lastAI} />
