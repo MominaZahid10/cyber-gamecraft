@@ -216,6 +216,20 @@ const FighterCharacter = ({ position, color, isPlayer = false, initialFacing = 1
               leftArmRef.current.position.z = facingDirection * 0.2;
               rightArmRef.current.position.z = facingDirection * 0.2;
             }
+            import('@/lib/analytics').then(({ addAction }) => {
+              const x = position2D[0];
+              const dist = Math.abs(x - (-x));
+              addAction({
+                game_type: 'fighting',
+                action_type: 'block',
+                timestamp: Date.now(),
+                success: true,
+                move_type: 'block',
+                position: [position2D[0], position2D[2] || 0],
+                combo_count: 0,
+                context: { player_health: 100, ai_health: 100, distance_to_opponent: dist },
+              });
+            });
             setTimeout(() => {
               if (leftArmRef.current && rightArmRef.current) {
                 leftArmRef.current.rotation.x = 0;
