@@ -371,7 +371,7 @@ const BadmintonPlayer = ({ position, color, isPlayer = false }: { position: [num
   const [isSwinging, setIsSwinging] = useState(false);
   const [isMoving, setIsMoving] = useState(false);
   const [racketPower, setRacketPower] = useState(0);
-  const [facingDirection, setFacingDirection] = useState<number>(position[2] > 0 ? -1 : 1);
+  const [facingDirection, setFacingDirection] = useState<number>(position[0] > 0 ? -1 : 1);
 
   useFrame((state, delta) => {
     if (bodyRef.current) {
