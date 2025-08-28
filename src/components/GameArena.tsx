@@ -425,22 +425,42 @@ const BadmintonPlayer = ({ position, color, isPlayer = false }: { position: [num
       if (isSwinging) return;
 
       const moveSpeed = 0.12;
+      const pushMove = () => {
+        import('@/lib/analytics').then(({ addAction }) => {
+          addAction({
+            game_type: 'badminton',
+            action_type: 'move',
+            timestamp: Date.now(),
+            success: true,
+            shot_type: 'drive',
+            court_position: [playerPos[0], playerPos[2] || 0],
+            shuttlecock_target: [0, 0],
+            power_level: 0,
+            rally_position: 0,
+            context: { rally_count: 0, court_side: playerPos[2] > 0 ? 'right' : 'left', game_score: [0, 0] },
+          });
+        });
+      };
       switch (event.key.toLowerCase()) {
         case 'w':
           setPlayerPos(prev => [prev[0], prev[1], Math.max(-5, prev[2] - moveSpeed)]);
           setIsMoving(true);
+          pushMove();
           break;
         case 's':
           setPlayerPos(prev => [prev[0], prev[1], Math.min(5, prev[2] + moveSpeed)]);
           setIsMoving(true);
+          pushMove();
           break;
         case 'a':
           setPlayerPos(prev => [Math.max(-7, prev[0] - moveSpeed), prev[1], prev[2]]);
           setIsMoving(true);
+          pushMove();
           break;
         case 'd':
           setPlayerPos(prev => [Math.min(7, prev[0] + moveSpeed), prev[1], prev[2]]);
           setIsMoving(true);
+          pushMove();
           break;
         case ' ':
           // Power swing - hold for more power
