@@ -1489,21 +1489,23 @@ const GameArena: React.FC<GameArenaProps> = ({ gameType, onGameChange, showAnaly
 
           {/* Right Controls */}
           <div className="flex gap-3 items-center">
-            {/* Voice Command Button */}
+            {/* Start/Pause Button (compact) */}
             <motion.button
-              className="hud-element p-3 rounded-full hover:bg-primary/20 transition-colors"
-              whileHover={{ scale: 1.1 }}
-              whileTap={{ scale: 0.9 }}
+              onClick={() => {
+                if (!gameStarted) { setGameStarted(true); setPaused(false); }
+                else { setPaused(p => !p); }
+              }}
+              className="hud-element px-3 py-2 rounded-lg text-xs font-medium"
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
             >
-              <svg className="w-5 h-5 text-primary" fill="currentColor" viewBox="0 0 20 20">
-                <path fillRule="evenodd" d="M7 4a3 3 0 016 0v4a3 3 0 11-6 0V4zm4 10.93A7.001 7.001 0 0017 8a1 1 0 10-2 0A5 5 0 015 8a1 1 0 00-2 0 7.001 7.001 0 006 6.93V17H6a1 1 0 100 2h8a1 1 0 100-2h-3v-2.07z" clipRule="evenodd" />
-              </svg>
+              {!gameStarted ? 'Start' : paused ? 'Resume' : 'Pause'}
             </motion.button>
 
             {/* Analytics Button */}
             <motion.button
               onClick={onToggleAnalytics}
-              className="hud-element px-4 py-2 rounded-lg hover:bg-primary/20 transition-colors font-medium"
+              className="hud-element px-3 py-2 rounded-lg text-xs font-medium"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
             >
