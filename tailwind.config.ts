@@ -59,7 +59,10 @@ export default {
 					purple: 'hsl(var(--gaming-purple))',
 					yellow: 'hsl(var(--gaming-yellow))',
 					teal: 'hsl(var(--gaming-teal))',
-					magenta: 'hsl(var(--gaming-magenta))'
+					magenta: 'hsl(var(--gaming-magenta))',
+					crimson: 'hsl(var(--gaming-crimson))',
+					emerald: 'hsl(var(--gaming-emerald))',
+					sapphire: 'hsl(var(--gaming-sapphire))'
 				},
 				sidebar: {
 					DEFAULT: 'hsl(var(--sidebar-background))',

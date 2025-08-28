@@ -44,11 +44,14 @@
     --radius: 0.9rem;
 
     /* Enhanced Professional Gaming Colors */
-    --gaming-orange: 15 98% 65%;
-    --gaming-purple: 285 95% 70%;
-    --gaming-yellow: 48 98% 70%;
-    --gaming-teal: 175 85% 60%;
-    --gaming-magenta: 320 90% 70%;
+    --gaming-orange: 20 95% 55%;
+    --gaming-purple: 270 85% 65%; 
+    --gaming-yellow: 45 100% 55%;
+    --gaming-teal: 180 100% 45%;
+    --gaming-magenta: 320 85% 65%;
+    --gaming-crimson: 0 85% 55%;
+    --gaming-emerald: 140 85% 45%;
+    --gaming-sapphire: 210 100% 50%;
     
     /* Enhanced Professional Gaming Gradients */
     --gradient-primary: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--gaming-teal)), hsl(var(--gaming-purple) / 0.8));
@@ -143,20 +146,48 @@
            shadow-lg hover:shadow-xl active:scale-95
            border border-primary/30 backdrop-blur-sm;
     box-shadow: var(--shadow-gaming);
-    background: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--gaming-teal) / 0.8));
+    background: linear-gradient(135deg, hsl(var(--gaming-crimson)), hsl(var(--gaming-orange)));
   }
 
   .btn-gaming:hover {
     box-shadow: var(--shadow-intense);
-    background: linear-gradient(135deg, hsl(var(--primary) / 1.1), hsl(var(--gaming-teal)));
+    background: linear-gradient(135deg, hsl(var(--gaming-crimson) / 1.1), hsl(var(--gaming-orange)));
   }
   
   .btn-gaming-outline {
-    @apply bg-transparent text-primary border-2 border-primary
-           hover:bg-primary hover:text-primary-foreground
+    @apply bg-transparent text-gaming-sapphire border-2 border-gaming-sapphire
+           hover:bg-gaming-sapphire hover:text-white
            transition-all duration-300 font-bold uppercase tracking-wider
            shadow-lg hover:shadow-xl active:scale-95 backdrop-blur-sm;
-    box-shadow: 0 0 20px hsl(var(--primary) / 0.2);
+    box-shadow: 0 0 20px hsl(var(--gaming-sapphire) / 0.2);
+  }
+
+  .btn-immersive {
+    @apply bg-transparent text-white font-bold uppercase tracking-wider
+           transition-all duration-300 shadow-lg hover:shadow-xl active:scale-95
+           border-2 backdrop-blur-sm;
+    background: linear-gradient(135deg, hsl(var(--gaming-emerald)), hsl(var(--gaming-sapphire)));
+    border-color: hsl(var(--gaming-emerald) / 0.3);
+    box-shadow: 0 0 30px hsl(var(--gaming-emerald) / 0.3);
+  }
+
+  .btn-immersive:hover {
+    box-shadow: 0 0 40px hsl(var(--gaming-emerald) / 0.5);
+    border-color: hsl(var(--gaming-emerald) / 0.6);
+  }
+
+  .score-bar {
+    background: linear-gradient(90deg, hsl(var(--gaming-emerald)), hsl(var(--gaming-sapphire)));
+    border: 1px solid hsl(var(--gaming-emerald) / 0.2);
+    box-shadow: 0 0 20px hsl(var(--gaming-emerald) / 0.3);
+    backdrop-filter: blur(8px);
+    background-color: hsl(var(--background) / 0.9);
+  }
+
+  .hud-element {
+    background: hsl(var(--background) / 0.8);
+    backdrop-filter: blur(8px);
+    border: 1px solid hsl(var(--border) / 0.3);
   }
 
   .btn-gaming-outline:hover {

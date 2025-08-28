@@ -4,6 +4,9 @@ import { OrbitControls, Box, Sphere, Plane, Text3D, Environment, Cone } from '@r
 import { motion } from 'framer-motion';
 import * as THREE from 'three';
 import Shuttlecock from './Shuttlecock';
+import ScoreBar from './ScoreBar';
+import GameControls from './GameControls';
+import AnalyticsPanel from './AnalyticsPanel';
 
 interface GameArenaProps {
   gameType: 'fighting' | 'badminton' | 'racing';
@@ -678,9 +681,9 @@ const RacingCar = ({ position, color, isPlayer = false }: { position: [number, n
         <meshPhongMaterial color={color} />
       </Box>
 
-      {/* Realistic wheels with rims */}
-      {[[-0.7, -0.15, 0.4], [0.7, -0.15, 0.4], [-0.7, -0.15, -0.4], [0.7, -0.15, -0.4]].map((wheelPos, i) => (
-        <group key={i} position={wheelPos}>
+      {/* Realistic wheels with rims - adjusted for vertical orientation */}
+      {[[-0.4, -0.15, 0.7], [0.4, -0.15, 0.7], [-0.4, -0.15, -0.7], [0.4, -0.15, -0.7]].map((wheelPos, i) => (
+        <group key={i} position={wheelPos as [number, number, number]}>
           {/* Tire */}
           <Sphere ref={(el) => { if (el) wheelRefs.current[i] = el; }} args={[0.15]} scale={[1, 0.7, 1]}>
             <meshPhongMaterial color="#2C2C2C" />
@@ -763,14 +766,14 @@ const ArenaEnvironment = ({ gameType }: { gameType: 'fighting' | 'badminton' | '
         </>
       )}
 
-      {/* Arena floor grid pattern for non-fighting games */}
-      {gameType !== 'fighting' && Array.from({ length: 10 }, (_, i) => (
+          {/* Enhanced arena floor grid pattern */}
+      {gameType !== 'fighting' && Array.from({ length: 12 }, (_, i) => (
         <React.Fragment key={i}>
-          <Plane args={[0.05, 25]} rotation={[-Math.PI / 2, 0, 0]} position={[-10 + i * 2, -1.99, 0]}>
-            <meshBasicMaterial color="#4ECDC4" transparent opacity={0.3} />
+          <Plane args={[0.08, 30]} rotation={[-Math.PI / 2, 0, 0]} position={[-12 + i * 2, -1.99, 0]}>
+            <meshBasicMaterial color="#4ECDC4" transparent opacity={0.4} />
           </Plane>
-          <Plane args={[25, 0.05]} rotation={[-Math.PI / 2, 0, 0]} position={[0, -1.99, -10 + i * 2]}>
-            <meshBasicMaterial color="#4ECDC4" transparent opacity={0.3} />
+          <Plane args={[30, 0.08]} rotation={[-Math.PI / 2, 0, 0]} position={[0, -1.99, -12 + i * 2]}>
+            <meshBasicMaterial color="#4ECDC4" transparent opacity={0.4} />
           </Plane>
         </React.Fragment>
       ))}
@@ -778,19 +781,19 @@ const ArenaEnvironment = ({ gameType }: { gameType: 'fighting' | 'badminton' | '
       {/* Enhanced Fighting Arena Environment */}
       {gameType === 'fighting' && (
         <>
-          {/* Arena cage structure */}
+          {/* Larger Arena cage structure */}
           <mesh position={[0, 1, 0]}>
-            <cylinderGeometry args={[4, 4, 4, 8, 1, true]} />
+            <cylinderGeometry args={[5.5, 5.5, 4, 8, 1, true]} />
             <meshBasicMaterial color="#C0C0C0" wireframe transparent opacity={0.6} />
           </mesh>
 
           {/* Arena posts */}
           {Array.from({ length: 8 }, (_, i) => {
             const angle = (i / 8) * Math.PI * 2;
-            const x = Math.cos(angle) * 4;
-            const z = Math.sin(angle) * 4;
+            const x = Math.cos(angle) * 5.5;
+            const z = Math.sin(angle) * 5.5;
             return (
-              <Box key={i} args={[0.1, 4, 0.1]} position={[x, 1, z]}>
+              <Box key={i} args={[0.15, 4, 0.15]} position={[x, 1, z]}>
                 <meshPhongMaterial color="#808080" />
               </Box>
             );
@@ -823,19 +826,29 @@ const ArenaEnvironment = ({ gameType }: { gameType: 'fighting' | 'badminton' | '
             );
           })}
 
-          {/* Background arena walls */}
-          <Plane args={[30, 15]} position={[0, 6, -15]}>
+          {/* Enhanced background arena walls with crowd atmosphere */}
+          <Plane args={[40, 20]} position={[0, 8, -20]}>
+            <meshPhongMaterial color="#0F1419" />
+          </Plane>
+          <Plane args={[40, 20]} rotation={[0, Math.PI, 0]} position={[0, 8, 20]}>
+            <meshPhongMaterial color="#0F1419" />
+          </Plane>
+          <Plane args={[40, 20]} rotation={[0, Math.PI / 2, 0]} position={[-20, 8, 0]}>
             <meshPhongMaterial color="#1A1A2E" />
           </Plane>
-          <Plane args={[30, 15]} rotation={[0, Math.PI, 0]} position={[0, 6, 15]}>
+          <Plane args={[40, 20]} rotation={[0, -Math.PI / 2, 0]} position={[20, 8, 0]}>
             <meshPhongMaterial color="#1A1A2E" />
           </Plane>
-          <Plane args={[30, 15]} rotation={[0, Math.PI / 2, 0]} position={[-15, 6, 0]}>
-            <meshPhongMaterial color="#16213E" />
-          </Plane>
-          <Plane args={[30, 15]} rotation={[0, -Math.PI / 2, 0]} position={[15, 6, 0]}>
-            <meshPhongMaterial color="#16213E" />
-          </Plane>
+
+          {/* Glowing arena floor */}
+          <mesh position={[0, -1.95, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+            <ringGeometry args={[5, 5.3, 8]} />
+            <meshBasicMaterial color="#FFD700" transparent opacity={0.8} />
+          </mesh>
+          <mesh position={[0, -1.94, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+            <circleGeometry args={[5, 8]} />
+            <meshPhongMaterial color="#2A2A4A" />
+          </mesh>
         </>
       )}
       
@@ -913,7 +926,7 @@ const ArenaEnvironment = ({ gameType }: { gameType: 'fighting' | 'badminton' | '
         <>
           {/* Main track surface - darker for night */}
           <Plane args={[15, 40]} rotation={[-Math.PI / 2, 0, 0]} position={[0, -1.85, 0]}>
-            <meshPhongMaterial color="#1A1A1A" roughness={0.8} />
+            <meshPhongMaterial color="#1A1A1A" />
           </Plane>
 
           {/* Illuminated track borders */}
@@ -1136,7 +1149,7 @@ const CameraController = ({ gameType }: { gameType: 'fighting' | 'badminton' | '
         const easeProgress = 1 - Math.pow(1 - progress, 3);
 
         camera.position.lerpVectors(startPos, endPos, easeProgress);
-        camera.lookAt(...target.target);
+        camera.lookAt(target.target[0], target.target[1], target.target[2]);
 
         if (progress < 1) {
           requestAnimationFrame(animate);
@@ -1154,21 +1167,75 @@ const CameraController = ({ gameType }: { gameType: 'fighting' | 'badminton' | '
 
 const GameArena: React.FC<GameArenaProps> = ({ gameType, onGameChange, showAnalytics, onToggleAnalytics }) => {
   const [gameStarted, setGameStarted] = useState(false);
+  const [gamePaused, setGamePaused] = useState(false);
+  const [playerScore, setPlayerScore] = useState(100);
+  const [aiScore, setAiScore] = useState(100);
+  const [extraInfo, setExtraInfo] = useState('');
+
+  // Initialize scores based on game type
+  useEffect(() => {
+    switch (gameType) {
+      case 'fighting':
+        setPlayerScore(100);
+        setAiScore(100);
+        setExtraInfo('Round 1');
+        break;
+      case 'badminton':
+        setPlayerScore(0);
+        setAiScore(0);
+        setExtraInfo('Set 1');
+        break;
+      case 'racing':
+        setPlayerScore(1);
+        setAiScore(1);
+        setExtraInfo('3 Laps');
+        break;
+    }
+  }, [gameType]);
+
+  const handleStartGame = () => {
+    setGameStarted(true);
+    setGamePaused(false);
+  };
+
+  const handlePauseGame = () => {
+    setGamePaused(!gamePaused);
+  };
+
+  const handleResetGame = () => {
+    setGameStarted(false);
+    setGamePaused(false);
+    // Reset scores to initial values
+    switch (gameType) {
+      case 'fighting':
+        setPlayerScore(100);
+        setAiScore(100);
+        break;
+      case 'badminton':
+        setPlayerScore(0);
+        setAiScore(0);
+        break;
+      case 'racing':
+        setPlayerScore(1);
+        setAiScore(1);
+        break;
+    }
+  };
 
   const renderGameContent = () => {
     switch (gameType) {
       case 'fighting':
         return (
           <>
-            <FighterCharacter position={[-2.5, 0, 0]} color="#4ECDC4" isPlayer />
-            <FighterCharacter position={[2.5, 0, 0]} color="#FF6B35" />
+            <FighterCharacter position={[-3.5, 0, 0]} color="#4ECDC4" isPlayer />
+            <FighterCharacter position={[3.5, 0, 0]} color="#FF6B35" />
           </>
         );
       case 'badminton':
         return (
           <>
-            <BadmintonPlayer position={[-3, 0, 0]} color="#00D4FF" isPlayer />
-            <BadmintonPlayer position={[3, 0, 0]} color="#FF6B35" />
+            <BadmintonPlayer position={[-4, 0, 0]} color="#00D4FF" isPlayer />
+            <BadmintonPlayer position={[4, 0, 0]} color="#FF6B35" />
             {/* Realistic Shuttlecock with physics */}
             <Shuttlecock />
           </>
@@ -1227,10 +1294,28 @@ const GameArena: React.FC<GameArenaProps> = ({ gameType, onGameChange, showAnaly
         </Canvas>
       </div>
 
-      {/* Game UI Overlay */}
+        {/* Score Bar */}
+        <ScoreBar
+          gameType={gameType}
+          playerScore={playerScore}
+          aiScore={aiScore}
+          extraInfo={extraInfo}
+        />
+
+        {/* Game Controls */}
+        <GameControls
+          gameType={gameType}
+          isGameStarted={gameStarted}
+          isPaused={gamePaused}
+          onStart={handleStartGame}
+          onPause={handlePauseGame}
+          onReset={handleResetGame}
+        />
+
+        {/* Game UI Overlay */}
       <div className="absolute inset-0 pointer-events-none">
         {/* Top HUD */}
-        <div className="absolute top-4 left-4 right-4 flex justify-between items-start pointer-events-auto">
+        <div className="absolute top-20 left-4 right-4 flex justify-between items-start pointer-events-auto">
           {/* Game Switcher */}
           <div className="flex gap-2">
             {(['fighting', 'badminton', 'racing'] as const).map((game) => (
@@ -1303,18 +1388,25 @@ const GameArena: React.FC<GameArenaProps> = ({ gameType, onGameChange, showAnaly
           </div>
         </div>
 
-        {/* Game Status */}
-        <div className="absolute bottom-4 right-4 hud-element p-4 rounded-lg">
-          <div className="text-sm font-medium">
+        {/* Game Status - moved to avoid overlap with controls */}
+        <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 hud-element p-4 rounded-lg">
+          <div className="text-sm font-medium text-center">
             <div className="text-primary font-bold font-gaming tracking-wider">STATUS</div>
             <div className="text-gaming-teal font-medium">
-              {gameType === 'fighting' && 'COMBAT READY'}
-              {gameType === 'badminton' && 'COURT ACTIVE'}
-              {gameType === 'racing' && 'ENGINES HOT'}
+              {gameType === 'fighting' && (gameStarted ? (gamePaused ? 'COMBAT PAUSED' : 'FIGHTING!') : 'COMBAT READY')}
+              {gameType === 'badminton' && (gameStarted ? (gamePaused ? 'MATCH PAUSED' : 'PLAYING!') : 'COURT ACTIVE')}
+              {gameType === 'racing' && (gameStarted ? (gamePaused ? 'RACE PAUSED' : 'RACING!') : 'ENGINES HOT')}
             </div>
           </div>
         </div>
       </div>
+
+      {/* Analytics Overlay */}
+      <AnalyticsPanel
+        isVisible={showAnalytics}
+        onClose={onToggleAnalytics}
+        gameType={gameType}
+      />
     </div>
   );
 };
