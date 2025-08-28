@@ -411,7 +411,7 @@ const FighterCharacter = ({ position, color, isPlayer = false, initialFacing = 1
 };
 
 // Badminton Player Component - Realistic with animations
-const BadmintonPlayer = ({ position, color, isPlayer = false }: { position: [number, number, number], color: string, isPlayer?: boolean }) => {
+const BadmintonPlayer = ({ position, color, isPlayer = false, paused = false }: { position: [number, number, number], color: string, isPlayer?: boolean, paused?: boolean }) => {
   const groupRef = useRef<THREE.Group>(null);
   const racketRef = useRef<THREE.Group>(null);
   const bodyRef = useRef<THREE.Mesh>(null);
