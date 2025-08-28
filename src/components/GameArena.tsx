@@ -475,7 +475,7 @@ const BadmintonPlayer = ({ position, color, isPlayer = false, paused = false }: 
     if (!isPlayer) return;
 
     const handleKeyDown = (event: KeyboardEvent) => {
-      if (isSwinging) return;
+      if (paused || isSwinging) return;
 
       const moveSpeed = 0.12;
       const pushMove = () => {
