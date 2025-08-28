@@ -821,6 +821,7 @@ const RacingCar = ({ position, color, isPlayer = false, paused = false }: { posi
     if (!isPlayer) return;
 
     const handleKeyDown = (event: KeyboardEvent) => {
+      if (paused) return;
       const send = (type: 'accelerate' | 'brake' | 'steer') => {
         import('@/lib/analytics').then(({ addAction }) => {
           addAction({
