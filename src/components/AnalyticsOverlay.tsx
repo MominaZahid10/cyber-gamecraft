@@ -76,7 +76,7 @@ const AnalyticsOverlay: React.FC<AnalyticsOverlayProps> = ({ isOpen, onClose }) 
               </motion.button>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6 mb-8">
               <Card className="bg-card/80 border border-white/10 shadow-xl">
                 <CardHeader className="pb-2">
                   <CardTitle className="text-foreground">Total Games</CardTitle>
