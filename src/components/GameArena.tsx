@@ -1,9 +1,10 @@
 import React, { useRef, useState, useEffect } from 'react';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
-import { OrbitControls, Box, Sphere, Plane, Text3D, Environment, Cone } from '@react-three/drei';
+import { OrbitControls, Box, Sphere, Plane } from '@react-three/drei';
 import { motion } from 'framer-motion';
 import * as THREE from 'three';
 import Shuttlecock from './Shuttlecock';
+import ScoreBar from './ScoreBar';
 
 interface GameArenaProps {
   gameType: 'fighting' | 'badminton' | 'racing';
