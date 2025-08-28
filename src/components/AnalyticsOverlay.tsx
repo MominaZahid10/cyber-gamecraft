@@ -65,7 +65,7 @@ const AnalyticsOverlay: React.FC<AnalyticsOverlayProps> = ({ isOpen, onClose }) 
             className="w-full max-w-6xl max-h-[90vh] overflow-y-auto"
           >
             <div className="flex justify-between items-center mb-6">
-              <h1 className="text-4xl font-bold text-glow">ARENA ANALYTICS</h1>
+              <h1 className="text-3xl md:text-4xl font-semibold tracking-tight text-foreground">Arena Analytics</h1>
               <motion.button
                 onClick={onClose}
                 className="btn-gaming-outline px-6 py-3"
