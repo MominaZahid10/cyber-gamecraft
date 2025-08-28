@@ -463,7 +463,7 @@ const BadmintonPlayer = ({ position, color, isPlayer = false }: { position: [num
 
       // Face the net properly
       if (groupRef.current) {
-        groupRef.current.rotation.set(0, facingDirection < 0 ? Math.PI : 0, 0);
+        groupRef.current.rotation.set(0, facingDirection > 0 ? -Math.PI / 2 : Math.PI / 2, 0);
       }
     }
   });
@@ -1056,9 +1056,6 @@ const ArenaEnvironment = ({ gameType }: { gameType: 'fighting' | 'badminton' | '
           <Sphere args={[10]} position={[0, 3, -12]}>
             <meshBasicMaterial color="#1e90ff" transparent opacity={0.06} />
           </Sphere>
-          <Sphere args={[8]} position={[8, 4, 8]}>
-            <meshBasicMaterial color="#22d3ee" transparent opacity={0.05} />
-          </Sphere>
           <Sphere args={[7]} position={[-8, 4, 8]}>
             <meshBasicMaterial color="#a78bfa" transparent opacity={0.04} />
           </Sphere>
@@ -1077,10 +1074,6 @@ const ArenaEnvironment = ({ gameType }: { gameType: 'fighting' | 'badminton' | '
           <Box args={[0.05, 1.55, 6.1]} position={[0, 0.775, 0]}>
             <meshPhongMaterial color="#FFFFFF" />
           </Box>
-          <mesh position={[0, 0.775, 0]} rotation={[0, 0, 0]}>
-            <planeGeometry args={[6.1, 1.55]} />
-            <meshBasicMaterial color="#FFFFFF" wireframe transparent opacity={0.8} />
-          </mesh>
 
           {/* Net posts */}
           <Box args={[0.08, 1.6, 0.08]} position={[0, 0.8, 3.05]}>
@@ -1322,11 +1315,10 @@ const ArenaEnvironment = ({ gameType }: { gameType: 'fighting' | 'badminton' | '
         </>
       )}
 
-      {/* Rim lighting */}
-      <pointLight position={[-8, 4, 8]} intensity={0.5} color="#4ECDC4" />
-      <pointLight position={[8, 4, -8]} intensity={0.5} color="#A855F7" />
-      <pointLight position={[8, 4, 8]} intensity={0.5} color="#FFD700" />
-      <pointLight position={[-8, 4, -8]} intensity={0.5} color="#FF6B35" />
+      {/* Rim lighting (reduced to avoid covering players) */}
+      <pointLight position={[-8, 4, 8]} intensity={0.4} color="#4ECDC4" />
+      <pointLight position={[8, 4, -8]} intensity={0.4} color="#A855F7" />
+      <pointLight position={[-8, 4, -8]} intensity={0.4} color="#FF6B35" />
 
     </>
   );
@@ -1392,16 +1384,16 @@ const GameArena: React.FC<GameArenaProps> = ({ gameType, onGameChange, showAnaly
       case 'fighting':
         return (
           <>
-            <FighterCharacter position={[-4.5, 0, 0]} color="#4ECDC4" isPlayer initialFacing={1} engaged={gameStarted} />
-            <FighterCharacter position={[4.5, 0, 0]} color="#FF6B35" initialFacing={1} engaged={gameStarted} />
+            <FighterCharacter position={[-4.5, 0, 0]} color="#00B3FF" isPlayer initialFacing={1} engaged={gameStarted} />
+            <FighterCharacter position={[4.5, 0, 0]} color="#FF4455" initialFacing={1} engaged={gameStarted} />
           </>
         );
       case 'badminton':
         return (
           <>
             {/* Players face each other across the net with realistic spacing (left-right) */}
-            <BadmintonPlayer position={[-5, 0, 0]} color="#00D4FF" isPlayer />
-            <BadmintonPlayer position={[5, 0, 0]} color="#FF6B35" />
+            <BadmintonPlayer position={[-5, 0, 0]} color="#22D3EE" isPlayer />
+            <BadmintonPlayer position={[5, 0, 0]} color="#F97316" />
             {/* Realistic Shuttlecock with physics */}
             <Shuttlecock />
           </>
