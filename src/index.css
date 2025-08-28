@@ -138,30 +138,28 @@
 @layer components {
   /* Enhanced Gaming Button Variants */
   .btn-gaming {
-    @apply bg-primary text-primary-foreground hover:bg-primary/90
-           transition-all duration-300 font-bold uppercase tracking-wider
-           shadow-lg hover:shadow-xl active:scale-95
-           border border-primary/30 backdrop-blur-sm;
-    box-shadow: var(--shadow-gaming);
-    background: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--gaming-teal) / 0.8));
+    @apply text-primary-foreground transition-all duration-300 font-semibold tracking-wide active:scale-95 border border-white/10 rounded-lg;
+    background: linear-gradient(135deg, #1b1f2a, #10141c);
+    box-shadow: 0 6px 20px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.06);
   }
 
   .btn-gaming:hover {
-    box-shadow: var(--shadow-intense);
-    background: linear-gradient(135deg, hsl(var(--primary) / 1.1), hsl(var(--gaming-teal)));
+    background: linear-gradient(135deg, #202633, #121823);
+    box-shadow: 0 8px 26px rgba(0,0,0,0.45), inset 0 1px 0 rgba(255,255,255,0.08);
   }
-  
+
   .btn-gaming-outline {
-    @apply bg-transparent text-primary border-2 border-primary
-           hover:bg-primary hover:text-primary-foreground
-           transition-all duration-300 font-bold uppercase tracking-wider
-           shadow-lg hover:shadow-xl active:scale-95 backdrop-blur-sm;
-    box-shadow: 0 0 20px hsl(var(--primary) / 0.2);
+    @apply bg-transparent text-foreground border border-white/20 hover:text-primary-foreground rounded-lg transition-all duration-300 font-semibold tracking-wide active:scale-95 backdrop-blur-sm;
+    background: linear-gradient(135deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
   }
 
   .btn-gaming-outline:hover {
-    box-shadow: var(--shadow-gaming);
-    background: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--gaming-teal) / 0.8));
+    background: linear-gradient(135deg, rgba(255,255,255,0.06), rgba(255,255,255,0.03));
+    box-shadow: 0 8px 26px rgba(0,0,0,0.45), inset 0 1px 0 rgba(255,255,255,0.08);
+  }
+
+  .scorebar {
+    box-shadow: 0 10px 30px rgba(0,0,0,0.45), inset 0 1px 0 rgba(255,255,255,0.05);
   }
   
   .btn-accent {
