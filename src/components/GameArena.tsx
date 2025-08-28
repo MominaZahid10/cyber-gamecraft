@@ -25,7 +25,7 @@ const FighterCharacter = ({ position, color, isPlayer = false, initialFacing = 1
   const [isWalking, setIsWalking] = useState(false);
   const [isBlocking, setIsBlocking] = useState(false);
   const [position2D, setPosition2D] = useState(position);
-  const [facingDirection, setFacingDirection] = useState(isPlayer ? 1 : -1);
+  const [facingDirection, setFacingDirection] = useState<number>(initialFacing);
 
   useFrame((state, delta) => {
     if (meshRef.current) {
