@@ -942,19 +942,29 @@ const ArenaEnvironment = ({ gameType }: { gameType: 'fighting' | 'badminton' | '
             );
           })}
 
-          {/* Background arena walls */}
+          {/* Background arena walls with glow */}
           <Plane args={[30, 15]} position={[0, 6, -15]}>
-            <meshPhongMaterial color="#1A1A2E" />
+            <meshBasicMaterial color="#0f1320" />
           </Plane>
           <Plane args={[30, 15]} rotation={[0, Math.PI, 0]} position={[0, 6, 15]}>
-            <meshPhongMaterial color="#1A1A2E" />
+            <meshBasicMaterial color="#0f1320" />
           </Plane>
           <Plane args={[30, 15]} rotation={[0, Math.PI / 2, 0]} position={[-15, 6, 0]}>
-            <meshPhongMaterial color="#16213E" />
+            <meshBasicMaterial color="#0c0f1a" />
           </Plane>
           <Plane args={[30, 15]} rotation={[0, -Math.PI / 2, 0]} position={[15, 6, 0]}>
-            <meshPhongMaterial color="#16213E" />
+            <meshBasicMaterial color="#0c0f1a" />
           </Plane>
+          {/* Large soft glows */}
+          <Sphere args={[10]} position={[0, 3, -12]}>
+            <meshBasicMaterial color="#1e90ff" transparent opacity={0.06} />
+          </Sphere>
+          <Sphere args={[8]} position={[8, 4, 8]}>
+            <meshBasicMaterial color="#22d3ee" transparent opacity={0.05} />
+          </Sphere>
+          <Sphere args={[7]} position={[-8, 4, 8]}>
+            <meshBasicMaterial color="#a78bfa" transparent opacity={0.04} />
+          </Sphere>
         </>
       )}
       
