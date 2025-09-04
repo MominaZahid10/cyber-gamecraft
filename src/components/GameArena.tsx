@@ -316,7 +316,7 @@ const FighterCharacter = ({ position, color, isPlayer = false, initialFacing = 1
       <Sphere args={[0.12]} position={[-0.32, 0.5, 0]}>
         <meshPhongMaterial color={color} />
       </Sphere>
-      <group ref={leftArmRef as any} position={[-0.35, 0.1, 0]}>
+      <group ref={leftArmRef} position={[-0.35, 0.1, 0]}>
         {/* Upper arm */}
         <mesh position={[0, 0.25, 0]}>
           <cylinderGeometry args={[0.07, 0.07, 0.5, 12]} />
@@ -340,7 +340,7 @@ const FighterCharacter = ({ position, color, isPlayer = false, initialFacing = 1
       <Sphere args={[0.12]} position={[0.32, 0.5, 0]}>
         <meshPhongMaterial color={color} />
       </Sphere>
-      <group ref={rightArmRef as any} position={[0.35, 0.1, 0]}>
+      <group ref={rightArmRef} position={[0.35, 0.1, 0]}>
         <mesh position={[0, 0.25, 0]}>
           <cylinderGeometry args={[0.07, 0.07, 0.5, 12]} />
           <meshPhongMaterial color={color} />
@@ -361,7 +361,7 @@ const FighterCharacter = ({ position, color, isPlayer = false, initialFacing = 1
       <Sphere args={[0.10]} position={[-0.15, -0.6, 0]}>
         <meshPhongMaterial color={color} />
       </Sphere>
-      <group ref={leftLegRef as any} position={[-0.15, -1.0, 0]}>
+      <group ref={leftLegRef} position={[-0.15, -1.0, 0]}>
         {/* Upper leg */}
         <mesh position={[0, 0.28, 0]}>
           <cylinderGeometry args={[0.08, 0.08, 0.6, 12]} />
@@ -385,7 +385,7 @@ const FighterCharacter = ({ position, color, isPlayer = false, initialFacing = 1
       <Sphere args={[0.10]} position={[0.15, -0.6, 0]}>
         <meshPhongMaterial color={color} />
       </Sphere>
-      <group ref={rightLegRef as any} position={[0.15, -1.0, 0]}>
+      <group ref={rightLegRef} position={[0.15, -1.0, 0]}>
         <mesh position={[0, 0.28, 0]}>
           <cylinderGeometry args={[0.08, 0.08, 0.6, 12]} />
           <meshPhongMaterial color={color} />
@@ -633,7 +633,7 @@ const BadmintonPlayer = ({ position, color, isPlayer = false, paused = false }: 
       <Sphere args={[0.08]} position={[-0.25, 0.45, 0]}>
         <meshPhongMaterial color={color} />
       </Sphere>
-      <group ref={leftArmRef as any} position={[-0.25, 0.05, 0]}>
+      <group ref={leftArmRef} position={[-0.25, 0.05, 0]}>
         <mesh position={[0, 0.22, 0]}>
           <cylinderGeometry args={[0.06, 0.06, 0.45, 12]} />
           <meshPhongMaterial color={color} />
@@ -653,7 +653,7 @@ const BadmintonPlayer = ({ position, color, isPlayer = false, paused = false }: 
       <Sphere args={[0.08]} position={[0.25, 0.45, 0]}>
         <meshPhongMaterial color={color} />
       </Sphere>
-      <group ref={rightArmRef as any} position={[0.25, 0.05, 0]}>
+      <group ref={rightArmRef} position={[0.25, 0.05, 0]}>
         <mesh position={[0, 0.22, 0]}>
           <cylinderGeometry args={[0.06, 0.06, 0.45, 12]} />
           <meshPhongMaterial color={color} />
@@ -674,7 +674,7 @@ const BadmintonPlayer = ({ position, color, isPlayer = false, paused = false }: 
       <Sphere args={[0.08]} position={[-0.14, -0.5, 0]}>
         <meshPhongMaterial color={color} />
       </Sphere>
-      <group ref={leftLegRef as any} position={[-0.14, -0.85, 0]}>
+      <group ref={leftLegRef} position={[-0.14, -0.85, 0]}>
         <mesh position={[0, 0.24, 0]}>
           <cylinderGeometry args={[0.07, 0.07, 0.5, 12]} />
           <meshPhongMaterial color={color} />
@@ -691,7 +691,7 @@ const BadmintonPlayer = ({ position, color, isPlayer = false, paused = false }: 
       <Sphere args={[0.08]} position={[0.14, -0.5, 0]}>
         <meshPhongMaterial color={color} />
       </Sphere>
-      <group ref={rightLegRef as any} position={[0.14, -0.85, 0]}>
+      <group ref={rightLegRef} position={[0.14, -0.85, 0]}>
         <mesh position={[0, 0.24, 0]}>
           <cylinderGeometry args={[0.07, 0.07, 0.5, 12]} />
           <meshPhongMaterial color={color} />
@@ -894,7 +894,7 @@ const RacingCar = ({ position, color, isPlayer = false, paused = false }: { posi
 
       {/* Realistic wheels with rims */}
       {[[-0.35, -0.15, 0.7], [0.35, -0.15, 0.7], [-0.35, -0.15, -0.7], [0.35, -0.15, -0.7]].map((wheelPos, i) => (
-        <group key={i} position={wheelPos as [number, number, number]}>
+        <group key={i} position={wheelPos}>
           {/* Tire */}
           <Sphere ref={(el) => { if (el) wheelRefs.current[i] = el; }} args={[0.15]} scale={[1, 0.7, 1]}>
             <meshPhongMaterial color="#2C2C2C" />
@@ -1136,7 +1136,7 @@ const ArenaEnvironment = ({ gameType }: { gameType: 'fighting' | 'badminton' | '
         <>
           {/* Main track surface - darker for night */}
           <Plane args={[15, 40]} rotation={[-Math.PI / 2, 0, 0]} position={[0, -1.85, 0]}>
-            <meshPhongMaterial color="#1A1A1A" />
+            <meshPhongMaterial color="#1A1A1A" roughness={0.8} />
           </Plane>
 
           {/* Illuminated track borders */}
@@ -1358,7 +1358,7 @@ const CameraController = ({ gameType }: { gameType: 'fighting' | 'badminton' | '
         const easeProgress = 1 - Math.pow(1 - progress, 3);
 
         camera.position.lerpVectors(startPos, endPos, easeProgress);
-        camera.lookAt(target.target[0], target.target[1], target.target[2]);
+        camera.lookAt(...target.target);
 
         if (progress < 1) {
           requestAnimationFrame(animate);
